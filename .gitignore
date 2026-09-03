@@ -1,0 +1,38 @@
+node_modules/
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+.env
+.env.local
+.env.*.local
+
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+.DS_Store
+Thumbs.db
+
+# respaldos que deja el escritor de .docx
+*.docx.bak
+
+coverage/
+.nyc_output/
+.turbo/
+
+# --- base de datos y respaldos ---
+# La base es derivable: seed + los .docx de OneDrive. No se versiona.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+respaldos/
+
+# --- operación ---
+logs/
+
+# --- Prisma ---
+apps/api/prisma/*.db

@@ -1,0 +1,62 @@
+# UNIVERSIDAD-app — school.adam.delpozodelvalle.com
+#   docker compose -f deploy/docker-compose.yml up -d --build
+
+name: universidad
+
+networks:
+  internal:
+    name: universidad_internal
+  proxy:
+    external: true
+    name: proxy
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    image: universidad-api:latest
+    container_name: universidad-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: '4180'
+      DATABASE_URL: file:/data/universidad.db
+      DOCS_ROOT: ${DOCS_ROOT:-/data/docs/2026-Semestre-5}
+      WEB_ORIGIN: ${WEB_ORIGIN}
+      SEMESTRE_ACTIVO: ${SEMESTRE_ACTIVO:-2026-OTO}
+      VIGILAR_DISCO: 'false'
+      BACKUP_ON_WRITE: 'true'
+    volumes:
+      - ${DATA_HOST_PATH}:/data
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - internal
+      - proxy
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    image: universidad-web:latest
+    container_name: universidad-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      PORT: '3180'
+      HOSTNAME: 0.0.0.0
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - internal
+      - proxy

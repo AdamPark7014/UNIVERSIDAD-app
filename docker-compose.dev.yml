@@ -1,0 +1,30 @@
+# Compose de desarrollo — solo la base de datos.
+# La API y el front se corren en el host con pnpm dev, para que puedan
+# leer y escribir los .docx de OneDrive sin montar volúmenes de Windows.
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#
+# Postgres queda en el puerto 5433 del host para no chocar con una
+# instalación local de PostgreSQL 17 en el 5432.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: universidad_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-universidad}
+    ports:
+      - '5433:5432'
+    volumes:
+      - universidad_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  universidad_pgdata:

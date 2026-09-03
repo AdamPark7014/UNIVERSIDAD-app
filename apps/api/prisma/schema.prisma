@@ -1,0 +1,300 @@
+// UNIVERSIDAD-app — modelo de datos
+//
+// Refleja la realidad del semestre: un semestre tiene materias, cada materia
+// tiene bloques de horario que generan sesiones fechadas, y cada sesión tiene
+// dos documentos (la guía del maestro y las notas del alumno). El contenido de
+// cada documento se guarda descompuesto en bloques para poder editarlo en la
+// app y regenerar el .docx sin perder el formato.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite: un solo usuario, un solo equipo, y la base es un índice sobre los .docx
+// que viven en OneDrive. No hay demonio que levantar ni contraseña que recordar,
+// y el respaldo es copiar un archivo. Para volver a PostgreSQL: cambia provider,
+// devuelve los enums (aquí son String porque SQLite no los soporta) y los tipos
+// nativos @db.Text, @db.Date y @db.Decimal.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- semestre
+
+model Semestre {
+  id          String   @id @default(cuid())
+  codigo      String   @unique // "2026-OTO"
+  nombre      String // "Otoño 2026"
+  inicio      DateTime // primer día de clases
+  fin         DateTime // último día de clases
+  finalesDesde DateTime
+  finalesHasta DateTime
+  raizDocumentos String // ruta absoluta a la carpeta del semestre
+  creadoEn    DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  materias      Materia[]
+  diasNoLectivos DiaNoLectivo[]
+
+  @@map("semestres")
+}
+
+/// Un día sin clase: asueto oficial, puente o suspensión.
+model DiaNoLectivo {
+  id         String   @id @default(cuid())
+  semestreId String
+  fecha      DateTime
+  motivo     String
+  oficial    Boolean  @default(true)
+
+  semestre Semestre @relation(fields: [semestreId], references: [id], onDelete: Cascade)
+
+  @@unique([semestreId, fecha])
+  @@map("dias_no_lectivos")
+}
+
+// ---------------------------------------------------------------- materia
+
+model Materia {
+  id         String  @id @default(cuid())
+  semestreId String
+  /// Identificador interno estable: "ihc", "ihc_lab", "edd", "teo"…
+  codigo     String
+  /// Clave oficial del salón/materia: CN220, HU109, LA116…
+  clave      String
+  nombre     String
+  /// Clave del plan de estudios: LIS3032, MAT2052…
+  claveOficial String?
+  profesor   String?
+  aula       String?
+  /// Nombre exacto de la carpeta en disco: "01-Interaccion-Humano-Computadora-CN220"
+  carpeta    String
+  /// Color de acento en la interfaz (hex)
+  color      String  @default("#1F5F4E")
+  orden      Int     @default(0)
+  esLaboratorio Boolean @default(false)
+  /// Nota libre: bibliografía, criterios, lo que sea
+  notas      String?
+
+  semestre     Semestre        @relation(fields: [semestreId], references: [id], onDelete: Cascade)
+  horarios     BloqueHorario[]
+  sesiones     Sesion[]
+  evaluaciones Evaluacion[]
+  libros       Libro[]
+  criterios    CriterioEvaluacion[]
+
+  @@unique([semestreId, codigo])
+  @@index([semestreId, orden])
+  @@map("materias")
+}
+
+/// Un bloque del horario semanal: "lunes 10:00-11:40".
+model BloqueHorario {
+  id        String @id @default(cuid())
+  materiaId String
+  /// 0 = lunes … 4 = viernes
+  diaSemana Int
+  horaInicio String // "10:00"
+  horaFin    String // "11:40"
+  aula       String?
+
+  materia Materia @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+
+  @@unique([materiaId, diaSemana, horaInicio])
+  @@map("bloques_horario")
+}
+
+/// Cómo se compone la calificación de una materia.
+model CriterioEvaluacion {
+  id        String @id @default(cuid())
+  materiaId String
+  concepto  String // "Tareas y participación"
+  porcentaje Float
+  notas     String?
+
+  materia Materia @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+
+  @@map("criterios_evaluacion")
+}
+
+// ---------------------------------------------------------------- sesión
+
+model Sesion {
+  id        String       @id @default(cuid())
+  materiaId String
+  /// Número de sesión dentro de la materia, empezando en 1
+  numero    Int
+  fecha     DateTime    
+  /// Semana del semestre (1..16)
+  semana    Int
+  diaSemana Int
+  horaInicio String
+  horaFin    String
+  tema      String
+  estado    String   @default("PENDIENTE")  /// PENDIENTE | CURSADA | REVISADA
+  /// Marca personal para repasar
+  destacada Boolean      @default(false)
+  asistio   Boolean?
+
+  materia      Materia      @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  documentos   Documento[]
+  tareas       TareaPropia[]
+  evaluaciones Evaluacion[]
+
+  @@unique([materiaId, fecha])
+  @@unique([materiaId, numero])
+  @@index([fecha])
+  @@map("sesiones")
+}
+
+// ---------------------------------------------------------------- documento
+
+model Documento {
+  id       String        @id @default(cuid())
+  sesionId String
+  tipo     String   /// GUIA | NOTAS
+  /// Ruta absoluta del .docx en disco
+  ruta     String
+  /// Nombre del archivo, sin carpeta
+  archivo  String
+  origen   String   @default("GENERADO")  /// GENERADO | IMPORTADO | EDITADO
+  /// SHA-256 del archivo la última vez que se sincronizó
+  hash     String?
+  tamanoBytes Int?
+  /// mtime del archivo en disco en la última sincronización
+  archivoModificadoEn DateTime?
+  /// true si el contenido en la base es más nuevo que el .docx
+  pendienteDeEscribir Boolean @default(false)
+  /// Palabras totales del documento
+  palabras Int @default(0)
+  /// Palabras de contenido real: excluye título, subtítulo, tema y el bloque
+  /// TAREA PROPIA con su texto de ayuda. Es lo que distingue una hoja en blanco
+  /// de una con apuntes: la plantilla vacía ya trae 24 palabras de encabezado.
+  palabrasContenido Int @default(0)
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  sesion  Sesion   @relation(fields: [sesionId], references: [id], onDelete: Cascade)
+  bloques Bloque[]
+
+  @@unique([sesionId, tipo])
+  @@index([pendienteDeEscribir])
+  @@map("documentos")
+}
+
+/// Un párrafo del documento. El orden reconstruye el .docx completo.
+model Bloque {
+  id          String     @id @default(cuid())
+  documentoId String
+  orden       Int
+  tipo        String   /// TITULO | SUBTITULO | TEMA | ENCABEZADO | PARRAFO | VINETA | NUMERADA | SEPARADOR | ESPACIO | TAREA_PROPIA_TITULO
+  texto       String    
+
+  documento Documento @relation(fields: [documentoId], references: [id], onDelete: Cascade)
+
+  @@unique([documentoId, orden])
+  @@index([documentoId])
+  @@map("bloques")
+}
+
+// ---------------------------------------------------------------- tarea propia
+
+/// Las ideas que se le ocurren al alumno en clase para investigar por su cuenta.
+/// Viven aparte del documento para poder listarlas y darles seguimiento.
+model TareaPropia {
+  id       String      @id @default(cuid())
+  sesionId String
+  texto    String     
+  estado   String   @default("ABIERTA")  /// ABIERTA | EN_PROGRESO | HECHA | DESCARTADA
+  orden    Int         @default(0)
+  /// Notas del alumno al resolverla
+  resultado String?   
+  fechaLimite DateTime?
+  completadaEn DateTime?
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  sesion Sesion @relation(fields: [sesionId], references: [id], onDelete: Cascade)
+
+  @@index([estado])
+  @@map("tareas_propias")
+}
+
+// ---------------------------------------------------------------- evaluación
+
+model Evaluacion {
+  id        String           @id @default(cuid())
+  materiaId String
+  /// Sesión en la que cae, si aplica
+  sesionId  String?
+  tipo      String   /// PARCIAL | FINAL | QUIZ | ENTREGA | PROYECTO | PRACTICA | EXPOSICION | REPORTE
+  titulo    String
+  descripcion String?       
+  fecha     DateTime        
+  /// Peso sobre la calificación final, en porcentaje
+  peso      Float?
+  estado    String   @default("PENDIENTE")  /// PENDIENTE | EN_PROGRESO | ENTREGADA | CALIFICADA
+  calificacion Float?
+  entregadaEn DateTime?
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  materia Materia @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  sesion  Sesion? @relation(fields: [sesionId], references: [id], onDelete: SetNull)
+
+  @@index([fecha])
+  @@index([materiaId, fecha])
+  @@map("evaluaciones")
+}
+
+// ---------------------------------------------------------------- libro
+
+model Libro {
+  id        String  @id @default(cuid())
+  materiaId String
+  titulo    String
+  autor     String?
+  anio      Int?
+  isbn      String?
+  editorial String?
+  /// Ruta absoluta al PDF si está en disco
+  ruta      String?
+  /// Nombre del archivo, sin carpeta
+  archivo   String?
+  tamanoBytes Int?
+  agregadoEn DateTime @default(now())
+  /// true si es de los tres principales de la materia
+  esPrincipal Boolean @default(false)
+  /// true si es de pago y solo está listado como referencia
+  soloReferencia Boolean @default(false)
+  url       String?
+  notas     String?
+
+  materia Materia @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+
+  @@map("libros")
+}
+
+// ---------------------------------------------------------------- sync
+
+/// Bitácora de cada sincronización disco ↔ base de datos.
+model EventoSync {
+  id        String        @id @default(cuid())
+  iniciadoEn DateTime     @default(now())
+  terminadoEn DateTime?
+  resultado String   @default("OK")  /// OK | CON_ERRORES | FALLIDO
+  direccion String // "disco->db" | "db->disco"
+  leidos    Int           @default(0)
+  creados   Int           @default(0)
+  actualizados Int        @default(0)
+  escritos  Int           @default(0)
+  errores   Int           @default(0)
+  detalle   String?      
+
+  @@index([iniciadoEn])
+  @@map("eventos_sync")
+}

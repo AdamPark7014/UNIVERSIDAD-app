@@ -1,0 +1,36 @@
+{
+  "name": "universidad-app",
+  "private": true,
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "sharp"
+    ]
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/** dev",
+    "dev:api": "pnpm --filter @universidad/api dev",
+    "dev:web": "pnpm --filter @universidad/web dev",
+    "build": "pnpm --filter @universidad/shared build && pnpm --filter @universidad/api build && pnpm --filter @universidad/web build",
+    "prisma:generate": "pnpm --filter @universidad/api prisma:generate",
+    "prisma:migrate": "pnpm --filter @universidad/api prisma:migrate",
+    "prisma:studio": "pnpm --filter @universidad/api prisma:studio",
+    "db:seed": "pnpm --filter @universidad/api db:seed",
+    "sync": "pnpm --filter @universidad/api sync",
+    "up": "docker compose -f docker-compose.dev.yml up -d",
+    "down": "docker compose -f docker-compose.dev.yml down",
+    "lint": "pnpm --filter ./apps/** lint",
+    "test": "pnpm --filter @universidad/api test",
+    "db:reset": "pnpm --filter @universidad/api db:reset && pnpm sync",
+    "encender": "powershell -ExecutionPolicy Bypass -File scripts/encender.ps1",
+    "apagar": "powershell -ExecutionPolicy Bypass -File scripts/apagar.ps1",
+    "avisar": "powershell -ExecutionPolicy Bypass -File scripts/avisar.ps1 -SoloTexto"
+  }
+}

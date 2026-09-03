@@ -1,0 +1,48 @@
+## Traefik — school.adam.delpozodelvalle.com (UNIVERSIDAD-app)
+## /api/* va a la API Nest (prefijo global api); el resto al front Next.
+
+http:
+  routers:
+    school-http:
+      rule: Host(`school.adam.delpozodelvalle.com`)
+      entryPoints: [web]
+      middlewares: [redirect-https-school]
+      service: dummy-school
+
+    school-api:
+      rule: Host(`school.adam.delpozodelvalle.com`) && PathPrefix(`/api`)
+      entryPoints: [websecure]
+      service: universidad-api
+      priority: 200
+      tls:
+        certResolver: letsencrypt
+
+    school-https:
+      rule: Host(`school.adam.delpozodelvalle.com`)
+      service: universidad-web
+      entryPoints: [websecure]
+      priority: 50
+      tls:
+        certResolver: letsencrypt
+
+  middlewares:
+    redirect-https-school:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    universidad-web:
+      loadBalancer:
+        servers:
+          - url: 'http://universidad-web:3180'
+
+    universidad-api:
+      loadBalancer:
+        servers:
+          - url: 'http://universidad-api:4180'
+
+    dummy-school:
+      loadBalancer:
+        servers:
+          - url: 'http://localhost'
