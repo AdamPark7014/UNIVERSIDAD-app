@@ -47,7 +47,7 @@ export function PanelGuiasExamen({
     <section className="panel-guias-examen">
       <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
         <div className="eyebrow">{titulo}</div>
-        <Link href="/evaluaciones#guias-examen" className="mini">
+        <Link href="/examenes#guias-examen" className="mini">
           Ver todas →
         </Link>
       </div>

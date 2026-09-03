@@ -44,6 +44,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const examenesCerca = (proximas ?? []).filter((e) =>
     ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
   ).length;
+  const entregasCerca = (proximas ?? []).filter(
+    (e) => !['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
+  ).length;
 
   const sidebar = (
     <BarraLateral
@@ -51,6 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       pendientes={sync?.pendientesDeEscribir ?? 0}
       notasPendientes={alertas?.notas?.pendientes ?? 0}
       examenesCerca={examenesCerca}
+      entregasCerca={entregasCerca}
     />
   );
 

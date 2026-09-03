@@ -23,6 +23,10 @@ const RESUMEN_MATERIA = {
 const dias = (a: Date, b: Date) =>
   Math.round((a.getTime() - b.getTime()) / 86_400_000);
 
+function enlaceEvaluacion(tipo: string): string {
+  return ['PARCIAL', 'FINAL', 'QUIZ'].includes(tipo) ? '/examenes' : '/entregas';
+}
+
 @Injectable()
 export class AlertasService {
   constructor(
@@ -139,7 +143,7 @@ export class AlertasService {
         gravedad: 'critica',
         titulo: e.titulo,
         detalle: `Venció hace ${dias(hoy, e.fecha)} días y sigue marcada como pendiente.`,
-        enlace: '/evaluaciones',
+        enlace: enlaceEvaluacion(e.tipo),
         fecha: e.fecha,
         materia: e.materia,
       });
@@ -152,7 +156,7 @@ export class AlertasService {
         gravedad: cuantos <= 2 ? 'critica' : 'aviso',
         titulo: e.titulo,
         detalle: cuantos === 0 ? 'Es hoy.' : cuantos === 1 ? 'Es mañana.' : `Faltan ${cuantos} días.`,
-        enlace: '/evaluaciones',
+        enlace: enlaceEvaluacion(e.tipo),
         fecha: e.fecha,
         materia: e.materia,
       });

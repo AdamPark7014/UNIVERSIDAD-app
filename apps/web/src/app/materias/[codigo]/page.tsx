@@ -142,7 +142,13 @@ export default async function Pagina({ params }: { params: { codigo: string } })
                     {fechaCorta(e.fecha)}
                   </td>
                   <td>
-                    <Link href="/evaluaciones">{e.titulo}</Link>
+                    <Link
+                      href={
+                        ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo) ? '/examenes' : '/entregas'
+                      }
+                    >
+                      {e.titulo}
+                    </Link>
                     <div className="mini silencio">{ETIQUETA_EVAL[e.tipo] ?? e.tipo}</div>
                   </td>
                   <td className="dato mini" style={{ textAlign: 'right', width: 50 }}>

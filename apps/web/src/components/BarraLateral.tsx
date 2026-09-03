@@ -17,17 +17,18 @@ interface MateriaNav {
 }
 
 const SECCIONES = [
-  { href: '/', etiqueta: 'Panel', icono: 'panel' },
-  { href: '/evaluaciones', etiqueta: 'Exámenes y entregas', icono: 'evaluaciones', destacado: true },
-  { href: '/buscar', etiqueta: 'Buscar', icono: 'buscar' },
-  { href: '/calendario', etiqueta: 'Calendario', icono: 'calendario' },
-  { href: '/horario', etiqueta: 'Horario', icono: 'horario' },
-  { href: '/notas-pendientes', etiqueta: 'Notas pendientes', icono: 'alerta' },
-  { href: '/libros', etiqueta: 'Biblioteca', icono: 'guia' },
-  { href: '/tareas', etiqueta: 'Tareas propias', icono: 'tareas' },
-  { href: '/estadisticas', etiqueta: 'Estadísticas', icono: 'estadisticas' },
-  { href: '/sync', etiqueta: 'Sincronización', icono: 'sync' },
-] as const;
+  { href: '/', etiqueta: 'Panel', icono: 'panel' as const },
+  { href: '/examenes', etiqueta: 'Exámenes', icono: 'evaluaciones' as const, destacado: true },
+  { href: '/entregas', etiqueta: 'Entregas', icono: 'tareas' as const },
+  { href: '/buscar', etiqueta: 'Buscar', icono: 'buscar' as const },
+  { href: '/calendario', etiqueta: 'Calendario', icono: 'calendario' as const },
+  { href: '/horario', etiqueta: 'Horario', icono: 'horario' as const },
+  { href: '/notas-pendientes', etiqueta: 'Notas pendientes', icono: 'alerta' as const },
+  { href: '/libros', etiqueta: 'Biblioteca', icono: 'guia' as const },
+  { href: '/tareas', etiqueta: 'Tareas propias', icono: 'tareas' as const },
+  { href: '/estadisticas', etiqueta: 'Estadísticas', icono: 'estadisticas' as const },
+  { href: '/sync', etiqueta: 'Sincronización', icono: 'sync' as const },
+];
 
 function salonDe(m: MateriaNav) {
   if (m.aula?.trim()) return m.aula.trim();
@@ -39,11 +40,13 @@ export function BarraLateral({
   pendientes,
   notasPendientes = 0,
   examenesCerca = 0,
+  entregasCerca = 0,
 }: {
   materias: MateriaNav[];
   pendientes: number;
   notasPendientes?: number;
   examenesCerca?: number;
+  entregasCerca?: number;
 }) {
   const ruta = usePathname();
   const router = useRouter();
@@ -88,7 +91,7 @@ export function BarraLateral({
           <Link
             key={s.href}
             href={s.href}
-            className={`${activo(s.href) ? 'activo' : ''}${(s as any).destacado ? ' nav-destacado' : ''}`}
+            className={`${activo(s.href) ? 'activo' : ''}${s.destacado ? ' nav-destacado' : ''}`}
             aria-current={activo(s.href) ? 'page' : undefined}
           >
             <span className="fila" style={{ gap: 10, minWidth: 0 }}>
@@ -101,8 +104,11 @@ export function BarraLateral({
             {s.href === '/notas-pendientes' && notasPendientes > 0 && (
               <span className="conteo pendiente alerta">{notasPendientes}</span>
             )}
-            {s.href === '/evaluaciones' && examenesCerca > 0 && (
+            {s.href === '/examenes' && examenesCerca > 0 && (
               <span className="conteo pendiente alerta">{examenesCerca}</span>
+            )}
+            {s.href === '/entregas' && entregasCerca > 0 && (
+              <span className="conteo pendiente alerta">{entregasCerca}</span>
             )}
           </Link>
         ))}
@@ -121,7 +127,11 @@ export function BarraLateral({
             <span className="fila" style={{ gap: 10, minWidth: 0 }}>
               <span className="punto-materia" style={{ background: m.color }} />
               <span className="etiqueta-nav columna-nav">
-                <span>{m.esLaboratorio ? `Lab · ${m.nombre.replace(/^Laboratorio de\s+/i, '')}` : m.nombre}</span>
+                <span>
+                  {m.esLaboratorio
+                    ? `Lab · ${m.nombre.replace(/^Laboratorio de\s+/i, '')}`
+                    : m.nombre}
+                </span>
                 <span className="salon-nav">Salón {salonDe(m)}</span>
               </span>
             </span>

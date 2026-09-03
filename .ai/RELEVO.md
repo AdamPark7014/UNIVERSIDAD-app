@@ -5,15 +5,16 @@
 - **Rama:** master
 
 ## Hecho en este turno
-- Deploy a Hetzner: código subido, imágenes rebuild, contenedores recreados.
-- Fix TypeScript `Biblioteca.aula` + `.dockerignore` para builds más ligeros.
-- Prod verificado: `/api/salud` ok, `/api/guias-examen` con 22 guías, web pública responde.
+- Separados en dos módulos: `/examenes` (parciales/quiz/final + guías) y `/entregas` (tareas/prácticas/proyectos/reportes).
+- Nav con dos ítems; `/evaluaciones` redirige a `/examenes`.
+- Alertas apuntan al módulo correcto según el tipo.
+- Desplegado en prod (school).
 
 ## A medias - CUIDADO
 - nada
 
 ## Siguiente paso
-- Usar https://school.adam.delpozodelvalle.com (hard refresh).
+- Hard refresh en https://school.adam.delpozodelvalle.com
 
 ## No tocar
 - `deploy/.env` y `data/` en el servidor.

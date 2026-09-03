@@ -98,11 +98,16 @@ export default async function Pagina() {
 
       {/* --- EXÁMENES PRIMERO --- */}
       <section className="bloque-examenes-prioridad" style={{ marginBottom: 40 }}>
-        <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
+          <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
           <div className="eyebrow">Exámenes próximos</div>
-          <Link href="/evaluaciones" className="boton chico">
-            Gestionar entregas
-          </Link>
+          <div className="fila" style={{ gap: 8 }}>
+            <Link href="/examenes" className="boton chico">
+              Ir a Exámenes
+            </Link>
+            <Link href="/entregas" className="boton chico secundario">
+              Entregas
+            </Link>
+          </div>
         </div>
         {examenesSemana.length === 0 ? (
           <div className="vacio">No hay exámenes en los próximos 10 días.</div>
@@ -111,7 +116,7 @@ export default async function Pagina() {
             {examenesSemana.map((e) => (
               <Link
                 key={e.id}
-                href="/evaluaciones"
+                href="/examenes"
                 className="tarjeta-examen-prioridad"
                 style={{ borderLeftColor: e.materia.color }}
               >
@@ -163,13 +168,23 @@ export default async function Pagina() {
 
       {otrasEntregas.filter((e) => diasDesdeHoy(e.fecha) <= 7).length > 0 && (
         <section style={{ marginBottom: 36 }}>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>Otras entregas esta semana</div>
+          <div className="fila entre" style={{ marginBottom: 12 }}>
+            <div className="eyebrow">Entregas esta semana</div>
+            <Link href="/entregas" className="mini">
+              Ir a Entregas →
+            </Link>
+          </div>
           <div className="tarjeta aviso-suave">
             <div className="pila" style={{ gap: 12 }}>
               {otrasEntregas
                 .filter((e) => diasDesdeHoy(e.fecha) <= 7)
                 .map((e) => (
-                  <div key={e.id} className="fila entre" style={{ gap: 10 }}>
+                  <Link
+                    key={e.id}
+                    href="/entregas"
+                    className="fila entre"
+                    style={{ gap: 10, color: 'inherit' }}
+                  >
                     <span style={{ minWidth: 0 }}>
                       <EtiquetaMateria
                         nombre={e.materia.nombre}
@@ -185,7 +200,7 @@ export default async function Pagina() {
                     <span className="dato mini" style={{ flex: 'none', color: 'var(--alerta)' }}>
                       {cuandoTexto(e.fecha)}
                     </span>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </div>
@@ -209,7 +224,7 @@ export default async function Pagina() {
         <section>
           <div className="fila entre" style={{ marginBottom: 12 }}>
             <div className="eyebrow">Más exámenes adelante</div>
-            <Link href="/evaluaciones" className="mini">
+            <Link href="/examenes" className="mini">
               Ver todas →
             </Link>
           </div>
