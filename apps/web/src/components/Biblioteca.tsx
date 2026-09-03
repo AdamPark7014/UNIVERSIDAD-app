@@ -28,6 +28,7 @@ interface Materia {
   clave: string;
   nombre: string;
   color: string;
+  aula?: string | null;
 }
 
 const mb = (n: number | null) => (n ? `${(n / 1048576).toFixed(1)} MB` : '');
