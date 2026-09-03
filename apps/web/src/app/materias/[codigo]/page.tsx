@@ -1,49 +1,76 @@
 import Link from 'next/link';
 import { obtenerSeguro, API } from '@/lib/api';
-import { fechaCorta, diaDeSemana, ETIQUETA_EVAL, DIAS } from '@/lib/formato';
+import { fechaCorta, diaDeSemana, ETIQUETA_EVAL, DIAS, textoSalon } from '@/lib/formato';
 import { SinApi } from '@/components/SinApi';
 import { SelloNotas } from '@/components/FilaSesion';
+import { PanelGuiasExamen, type GuiaExamenItem } from '@/components/PanelGuiasExamen';
+import { PanelPronunciacionAleman } from '@/components/PanelPronunciacionAleman';
+import { SelloOrigen } from '@/components/SelloOrigen';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Pagina({ params }: { params: { codigo: string } }) {
-  const m = await obtenerSeguro<any>(`/materias/${params.codigo}`);
+  const [m, guias] = await Promise.all([
+    obtenerSeguro<any>(`/materias/${params.codigo}`),
+    obtenerSeguro<GuiaExamenItem[]>(`/guias-examen?materia=${params.codigo}`),
+  ]);
   if (!m) return <SinApi />;
 
   const conNotas = m.sesiones.filter((s: any) =>
     s.documentos.some((d: any) => d.tipo === 'NOTAS' && d.palabrasContenido > 0),
   ).length;
+  const salon = textoSalon(m.aula, m.clave);
+  const esAleman = m.codigo === 'ale';
+  const examenes = m.evaluaciones.filter((e: any) =>
+    ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
+  );
 
   return (
     <>
       <header className="cabecera-pagina">
         <div className="eyebrow">
-          {m.clave}
-          {m.claveOficial ? ` · ${m.claveOficial}` : ''}
+          {m.esLaboratorio ? 'Laboratorio' : 'Materia'}
+          {m.claveOficial ? ` · plan ${m.claveOficial}` : ''}
         </div>
         <h1 className="fila" style={{ gap: 12 }}>
-          <span className="punto-materia" style={{ background: m.color, width: 12, height: 12 }} />
+          <span className="punto-materia" style={{ background: m.color, width: 14, height: 14 }} />
           {m.nombre}
         </h1>
         <p className="sub">
           {m.profesor ?? 'Profesor por confirmar'}
-          {m.aula ? ` · ${m.aula}` : ''} ·{' '}
+          {salon ? ` · Salón ${salon}` : ''} ·{' '}
           {m.horarios
             .map((h: any) => `${DIAS[h.diaSemana]} ${h.horaInicio}-${h.horaFin}`)
             .join(' y ')}
         </p>
       </header>
 
+      {(guias ?? []).length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <PanelGuiasExamen
+            guias={guias ?? []}
+            titulo="Guías de examen"
+            mostrarMateria={false}
+          />
+        </div>
+      )}
+
+      {esAleman && (
+        <div style={{ marginBottom: 36 }}>
+          <PanelPronunciacionAleman />
+        </div>
+      )}
+
       <div className="tarjeta hueso fila entre" style={{ marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <strong>Compilar para estudiar</strong>
           <div className="mini silencio">
-            Junta todo el material en un solo .docx, con horario, criterios y fechas al inicio.
+            Junta el material de sesiones en un solo .docx (distinto de las guías de examen de arriba).
           </div>
         </div>
         <div className="fila" style={{ gap: 6 }}>
           <a className="boton chico" href={`${API}/api/exportar/materia/${m.codigo}?tipo=GUIA`}>
-            Guías
+            Guías de clase
           </a>
           <a
             className="boton chico secundario"
@@ -67,11 +94,11 @@ export default async function Pagina({ params }: { params: { codigo: string } })
         </div>
         <div className="tarjeta metrica">
           <div className="valor">{conNotas}</div>
-          <div className="etiqueta">Con notas escritas</div>
+          <div className="etiqueta">Con notas</div>
         </div>
         <div className="tarjeta metrica">
-          <div className="valor">{m.evaluaciones.length}</div>
-          <div className="etiqueta">Evaluaciones</div>
+          <div className="valor">{examenes.length}</div>
+          <div className="etiqueta">Exámenes</div>
         </div>
         <div className="tarjeta metrica">
           <div className="valor">{m.libros.length}</div>
@@ -88,9 +115,7 @@ export default async function Pagina({ params }: { params: { codigo: string } })
                 <tr key={c.id}>
                   <td>
                     {c.concepto}
-                    {c.notas && (
-                      <div className="mini silencio">{c.notas}</div>
-                    )}
+                    {c.notas && <div className="mini silencio">{c.notas}</div>}
                   </td>
                   <td className="dato" style={{ textAlign: 'right', width: 60 }}>
                     {Number(c.porcentaje) > 0 ? `${Number(c.porcentaje)}%` : '—'}
@@ -107,10 +132,17 @@ export default async function Pagina({ params }: { params: { codigo: string } })
           <table className="datos">
             <tbody>
               {m.evaluaciones.map((e: any) => (
-                <tr key={e.id}>
-                  <td className="dato mini" style={{ width: 92 }}>{fechaCorta(e.fecha)}</td>
+                <tr
+                  key={e.id}
+                  className={
+                    ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo) ? 'fila-examen' : undefined
+                  }
+                >
+                  <td className="dato mini" style={{ width: 92 }}>
+                    {fechaCorta(e.fecha)}
+                  </td>
                   <td>
-                    {e.titulo}
+                    <Link href="/evaluaciones">{e.titulo}</Link>
                     <div className="mini silencio">{ETIQUETA_EVAL[e.tipo] ?? e.tipo}</div>
                   </td>
                   <td className="dato mini" style={{ textAlign: 'right', width: 50 }}>
@@ -125,7 +157,12 @@ export default async function Pagina({ params }: { params: { codigo: string } })
 
       {m.libros.length > 0 && (
         <section style={{ marginBottom: 32 }}>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>Bibliografía</div>
+          <div className="fila entre" style={{ marginBottom: 12 }}>
+            <div className="eyebrow">Bibliografía</div>
+            <Link href="/libros" className="mini">
+              Abrir biblioteca →
+            </Link>
+          </div>
           <div className="tarjeta" style={{ padding: 0 }}>
             <table className="datos">
               <thead>
@@ -138,7 +175,7 @@ export default async function Pagina({ params }: { params: { codigo: string } })
               <tbody>
                 {m.libros.map((l: any) => (
                   <tr key={l.id}>
-                    <td>{l.titulo}</td>
+                    <td style={{ fontSize: 15 }}>{l.titulo}</td>
                     <td className="silencio mini">
                       {l.autor ?? '—'}
                       {l.editorial ? ` · ${l.editorial}` : ''}
@@ -159,6 +196,11 @@ export default async function Pagina({ params }: { params: { codigo: string } })
         <div className="eyebrow" style={{ marginBottom: 12 }}>
           Sesiones · {m.sesiones.length}
         </div>
+        <p className="mini silencio" style={{ marginBottom: 10 }}>
+          <SelloOrigen origen="GENERADO" /> = notas del sistema ·{' '}
+          <SelloOrigen origen="EDITADO" /> = las editaste en la app ·{' '}
+          <SelloOrigen origen="IMPORTADO" /> = desde Word
+        </p>
         <div className="tarjeta" style={{ padding: 0 }}>
           <table className="datos">
             <thead>
@@ -166,12 +208,13 @@ export default async function Pagina({ params }: { params: { codigo: string } })
                 <th style={{ width: 40 }}>#</th>
                 <th style={{ width: 150 }}>Fecha</th>
                 <th>Tema</th>
-                <th style={{ width: 110 }}>Notas</th>
+                <th style={{ width: 170 }}>Notas</th>
                 <th style={{ width: 60 }}>Tareas</th>
               </tr>
             </thead>
             <tbody>
               {m.sesiones.map((s: any) => {
+                const notas = s.documentos?.find((d: any) => d.tipo === 'NOTAS');
                 return (
                   <tr key={s.id}>
                     <td className="dato silencio">{s.numero}</td>
@@ -183,7 +226,12 @@ export default async function Pagina({ params }: { params: { codigo: string } })
                       <Link href={`/sesiones/${s.id}`}>{s.tema}</Link>
                     </td>
                     <td>
-                      <SelloNotas sesion={s} />
+                      <span className="fila" style={{ gap: 6, flexWrap: 'wrap' }}>
+                        <SelloNotas sesion={s} />
+                        {notas && (notas.palabrasContenido ?? 0) > 0 && (
+                          <SelloOrigen origen={notas.origen} />
+                        )}
+                      </span>
                     </td>
                     <td className="dato silencio">{s._count.tareas || ''}</td>
                   </tr>

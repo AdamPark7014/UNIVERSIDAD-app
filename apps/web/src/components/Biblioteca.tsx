@@ -227,7 +227,7 @@ export function Biblioteca({
                 title={m.nombre}
               >
                 <span className="punto-materia" style={{ background: m.color }} />
-                {m.clave} · {porMateria.get(m.codigo)}
+                {m.nombre} · {porMateria.get(m.codigo)}
               </button>
             ))}
         </div>
@@ -283,7 +283,7 @@ export function Biblioteca({
                 title={l.ruta ? 'Abrir aquí' : 'Sin archivo en disco'}
               >
                 <span className="fila entre" style={{ gap: 8 }}>
-                  <span className="mini silencio">{l.materia.clave}</span>
+                  <span className="mini silencio">{l.materia.nombre}</span>
                   {l.esPrincipal && <span className="sello al-dia">principal</span>}
                 </span>
                 <span className="libro-titulo">{l.titulo}</span>
@@ -479,7 +479,7 @@ function FormularioAgregar({
           <select value={materiaId} onChange={(e) => setMateriaId(e.target.value)}>
             {materias.map((m) => (
               <option key={m.id} value={m.id}>
-                {m.clave} — {m.nombre}
+                {m.nombre}{m.aula ? ` · Salón ${m.aula}` : ''}
               </option>
             ))}
           </select>

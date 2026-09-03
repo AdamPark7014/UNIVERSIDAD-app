@@ -14,6 +14,7 @@ import { HojaDocumento } from './HojaDocumento';
 import { EditorBloques } from './EditorBloques';
 import { EditorWord } from './EditorWord';
 import { Icono } from './Icono';
+import { SelloOrigen } from './SelloOrigen';
 
 interface Doc {
   id: string;
@@ -22,6 +23,7 @@ interface Doc {
   palabras: number;
   palabrasContenido: number;
   pendienteDeEscribir: boolean;
+  origen?: string;
   bloques: { orden: number; tipo: string; texto: string }[];
 }
 
@@ -252,6 +254,7 @@ function EditorNotas({ doc, compacto = false }: { doc: Doc; compacto?: boolean }
       <div className="cabecera-panel">
         <Icono nombre="nota" tamano={15} />
         <span>Mis notas</span>
+        <SelloOrigen origen={doc.origen} />
         <span className="dato mini silencio">{palabras} palabras</span>
         {sucio && <span className="sello deuda">sin guardar</span>}
         {!sucio && doc.pendienteDeEscribir && (

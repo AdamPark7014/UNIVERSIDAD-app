@@ -17,6 +17,7 @@ import { SaludModule } from './salud/salud.module';
 import { LibrosModule } from './libros/libros.module';
 import { AlertasModule } from './alertas/alertas.module';
 import { NotasModule } from './notas/notas.module';
+import { GuiasExamenModule } from './guias-examen/guias-examen.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { NotasModule } from './notas/notas.module';
     LibrosModule,
     AlertasModule,
     NotasModule,
+    GuiasExamenModule,
   ],
 })
 export class AppModule {}

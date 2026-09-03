@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { obtenerSeguro } from '@/lib/api';
-import { DIAS } from '@/lib/formato';
+import { DIAS, textoSalon } from '@/lib/formato';
 import { SinApi } from '@/components/SinApi';
 
 export const dynamic = 'force-dynamic';
@@ -21,17 +21,18 @@ export default async function Pagina() {
       <div className="rejilla c2">
         {materias.map((m) => {
           const a = porCodigo.get(m.codigo);
+          const salon = textoSalon(m.aula, m.clave);
           return (
-            <Link key={m.id} href={`/materias/${m.codigo}`} className="tarjeta">
+            <Link key={m.id} href={`/materias/${m.codigo}`} className="tarjeta tarjeta-materia">
               <div className="fila entre" style={{ marginBottom: 10 }}>
-                <span className="fila">
+                <span className="fila" style={{ gap: 8 }}>
                   <span className="punto-materia" style={{ background: m.color }} />
-                  <span className="dato mini silencio">{m.clave}</span>
+                  {salon && <span className="dato mini silencio">Salón {salon}</span>}
                 </span>
                 {m.esLaboratorio && <span className="insignia gris">laboratorio</span>}
               </div>
 
-              <h3 style={{ color: 'var(--tinta)', marginBottom: 4 }}>{m.nombre}</h3>
+              <h3 style={{ color: 'var(--tinta)', marginBottom: 4, fontSize: 20 }}>{m.nombre}</h3>
               <p className="mini silencio" style={{ margin: '0 0 12px' }}>
                 {m.profesor ?? 'Profesor por confirmar'}
               </p>

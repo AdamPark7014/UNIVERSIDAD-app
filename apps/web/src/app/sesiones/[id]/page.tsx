@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { obtenerSeguro } from '@/lib/api';
-import { fechaLarga, cuandoTexto, ETIQUETA_EVAL } from '@/lib/formato';
+import { fechaLarga, cuandoTexto, ETIQUETA_EVAL, textoSalon } from '@/lib/formato';
 import { SinApi } from '@/components/SinApi';
 import { PanelDocumentos } from '@/components/PanelDocumentos';
 import { ListaTareas } from '@/components/ListaTareas';
+import { PanelPronunciacionAleman } from '@/components/PanelPronunciacionAleman';
+import { SelloOrigen } from '@/components/SelloOrigen';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +15,8 @@ export default async function Pagina({ params }: { params: { id: string } }) {
 
   const guia = s.documentos.find((d: any) => d.tipo === 'GUIA');
   const notas = s.documentos.find((d: any) => d.tipo === 'NOTAS');
+  const salon = textoSalon(s.materia.aula, s.materia.clave);
+  const esAleman = s.materia.codigo === 'ale';
 
   return (
     <>
@@ -20,6 +24,12 @@ export default async function Pagina({ params }: { params: { id: string } }) {
         <div className="fila entre">
           <div className="eyebrow">
             <Link href={`/materias/${s.materia.codigo}`}>{s.materia.nombre}</Link>
+            {salon && (
+              <>
+                <span style={{ opacity: 0.5 }}>·</span>
+                <span>Salón {salon}</span>
+              </>
+            )}
             <span style={{ opacity: 0.5 }}>·</span>
             Sesión {s.numero} · Semana {s.semana}
           </div>
@@ -40,6 +50,11 @@ export default async function Pagina({ params }: { params: { id: string } }) {
         <p className="sub dato">
           {fechaLarga(s.fecha)} · {s.horaInicio}–{s.horaFin} · {cuandoTexto(s.fecha)}
         </p>
+        {notas && (notas.palabrasContenido ?? 0) > 0 && (
+          <p className="mini silencio" style={{ marginTop: 8 }}>
+            Origen de las notas: <SelloOrigen origen={notas.origen} />
+          </p>
+        )}
       </header>
 
       {s.evaluaciones.length > 0 && (
@@ -52,6 +67,12 @@ export default async function Pagina({ params }: { params: { id: string } }) {
               {e.peso && <span className="mini silencio dato">{Number(e.peso)}%</span>}
             </div>
           ))}
+        </div>
+      )}
+
+      {esAleman && (
+        <div style={{ marginBottom: 28 }}>
+          <PanelPronunciacionAleman />
         </div>
       )}
 

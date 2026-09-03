@@ -1,11 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 const CON_MATERIA = {
   materia: {
-    select: { id: true, codigo: true, clave: true, nombre: true, color: true },
+    select: {
+      id: true,
+      codigo: true,
+      clave: true,
+      nombre: true,
+      color: true,
+      aula: true,
+      esLaboratorio: true,
+    },
   },
 };
+
+const ESTADOS_OK = [
+  'PENDIENTE',
+  'EN_PROGRESO',
+  'ENTREGADA',
+  'ENTREGADA_TARDE',
+  'CALIFICADA',
+] as const;
 
 @Controller('evaluaciones')
 export class EvaluacionesController {
@@ -85,16 +101,22 @@ export class EvaluacionesController {
       descripcion?: string;
       fecha?: string;
       peso?: number;
-      estado?: 'PENDIENTE' | 'EN_PROGRESO' | 'ENTREGADA' | 'CALIFICADA';
+      estado?: (typeof ESTADOS_OK)[number];
       calificacion?: number;
     },
   ) {
+    if (dto.estado && !ESTADOS_OK.includes(dto.estado)) {
+      throw new BadRequestException(`Estado inválido: ${dto.estado}`);
+    }
+    const entregada =
+      dto.estado === 'ENTREGADA' || dto.estado === 'ENTREGADA_TARDE';
     return this.prisma.evaluacion.update({
       where: { id },
       data: {
         ...dto,
         ...(dto.fecha ? { fecha: new Date(dto.fecha) } : {}),
-        ...(dto.estado === 'ENTREGADA' ? { entregadaEn: new Date() } : {}),
+        ...(entregada ? { entregadaEn: new Date() } : {}),
+        ...(dto.estado === 'PENDIENTE' ? { entregadaEn: null } : {}),
       },
       include: CON_MATERIA,
     });

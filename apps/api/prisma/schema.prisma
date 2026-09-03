@@ -236,7 +236,8 @@ model Evaluacion {
   fecha     DateTime        
   /// Peso sobre la calificación final, en porcentaje
   peso      Float?
-  estado    String   @default("PENDIENTE")  /// PENDIENTE | EN_PROGRESO | ENTREGADA | CALIFICADA
+  /// PENDIENTE = no entregado · ENTREGADA = a tiempo · ENTREGADA_TARDE · EN_PROGRESO · CALIFICADA
+  estado    String   @default("PENDIENTE")
   calificacion Float?
   entregadaEn DateTime?
 

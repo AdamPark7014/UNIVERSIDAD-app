@@ -11,37 +11,44 @@ interface MateriaNav {
   clave: string;
   nombre: string;
   color: string;
+  aula?: string | null;
   esLaboratorio: boolean;
   _count?: { sesiones: number };
 }
 
 const SECCIONES = [
   { href: '/', etiqueta: 'Panel', icono: 'panel' },
+  { href: '/evaluaciones', etiqueta: 'Exámenes y entregas', icono: 'evaluaciones', destacado: true },
   { href: '/buscar', etiqueta: 'Buscar', icono: 'buscar' },
   { href: '/calendario', etiqueta: 'Calendario', icono: 'calendario' },
   { href: '/horario', etiqueta: 'Horario', icono: 'horario' },
   { href: '/notas-pendientes', etiqueta: 'Notas pendientes', icono: 'alerta' },
   { href: '/libros', etiqueta: 'Biblioteca', icono: 'guia' },
   { href: '/tareas', etiqueta: 'Tareas propias', icono: 'tareas' },
-  { href: '/evaluaciones', etiqueta: 'Evaluaciones', icono: 'evaluaciones' },
   { href: '/estadisticas', etiqueta: 'Estadísticas', icono: 'estadisticas' },
   { href: '/sync', etiqueta: 'Sincronización', icono: 'sync' },
 ] as const;
+
+function salonDe(m: MateriaNav) {
+  if (m.aula?.trim()) return m.aula.trim();
+  return m.clave.replace(/^([A-Z]+)(\d)/, '$1 $2');
+}
 
 export function BarraLateral({
   materias,
   pendientes,
   notasPendientes = 0,
+  examenesCerca = 0,
 }: {
   materias: MateriaNav[];
   pendientes: number;
   notasPendientes?: number;
+  examenesCerca?: number;
 }) {
   const ruta = usePathname();
   const router = useRouter();
   const cajaBusqueda = useRef<HTMLInputElement>(null);
 
-  // Ctrl+K enfoca la búsqueda desde cualquier pantalla.
   useEffect(() => {
     const alTeclear = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -81,7 +88,7 @@ export function BarraLateral({
           <Link
             key={s.href}
             href={s.href}
-            className={activo(s.href) ? 'activo' : ''}
+            className={`${activo(s.href) ? 'activo' : ''}${(s as any).destacado ? ' nav-destacado' : ''}`}
             aria-current={activo(s.href) ? 'page' : undefined}
           >
             <span className="fila" style={{ gap: 10, minWidth: 0 }}>
@@ -94,6 +101,9 @@ export function BarraLateral({
             {s.href === '/notas-pendientes' && notasPendientes > 0 && (
               <span className="conteo pendiente alerta">{notasPendientes}</span>
             )}
+            {s.href === '/evaluaciones' && examenesCerca > 0 && (
+              <span className="conteo pendiente alerta">{examenesCerca}</span>
+            )}
           </Link>
         ))}
       </nav>
@@ -105,16 +115,16 @@ export function BarraLateral({
             key={m.id}
             href={`/materias/${m.codigo}`}
             className={ruta === `/materias/${m.codigo}` ? 'activo' : ''}
-            title={m.nombre}
+            title={`${m.nombre} · Salón ${salonDe(m)}`}
             aria-current={ruta === `/materias/${m.codigo}` ? 'page' : undefined}
           >
             <span className="fila" style={{ gap: 10, minWidth: 0 }}>
               <span className="punto-materia" style={{ background: m.color }} />
-              <span className="etiqueta-nav">
-                {m.esLaboratorio ? `Lab · ${m.clave}` : m.nombre}
+              <span className="etiqueta-nav columna-nav">
+                <span>{m.esLaboratorio ? `Lab · ${m.nombre.replace(/^Laboratorio de\s+/i, '')}` : m.nombre}</span>
+                <span className="salon-nav">Salón {salonDe(m)}</span>
               </span>
             </span>
-            <span className="conteo">{m._count?.sesiones ?? ''}</span>
           </Link>
         ))}
         {materias.length === 0 && (

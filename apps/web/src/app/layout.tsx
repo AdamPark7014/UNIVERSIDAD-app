@@ -34,17 +34,23 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [materias, sync, alertas] = await Promise.all([
+  const [materias, sync, alertas, proximas] = await Promise.all([
     obtenerSeguro<any[]>('/materias'),
     obtenerSeguro<any>('/sync/estado'),
     obtenerSeguro<any>('/alertas'),
+    obtenerSeguro<any[]>('/evaluaciones/proximas?dias=14'),
   ]);
+
+  const examenesCerca = (proximas ?? []).filter((e) =>
+    ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
+  ).length;
 
   const sidebar = (
     <BarraLateral
       materias={materias ?? []}
       pendientes={sync?.pendientesDeEscribir ?? 0}
       notasPendientes={alertas?.notas?.pendientes ?? 0}
+      examenesCerca={examenesCerca}
     />
   );
 

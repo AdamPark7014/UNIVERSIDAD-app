@@ -62,9 +62,33 @@ export const ETIQUETA_EVAL: Record<string, string> = {
   REPORTE: 'Reporte',
 };
 
+/** Estados de entrega editables por el alumno. */
+export const ETIQUETA_ESTADO_EVAL: Record<string, string> = {
+  PENDIENTE: 'No entregado',
+  EN_PROGRESO: 'En progreso',
+  ENTREGADA: 'Envío en tiempo y forma',
+  ENTREGADA_TARDE: 'Envío atrasado',
+  CALIFICADA: 'Calificada',
+};
+
+export const ESTADOS_EVAL_OPCIONES: [string, string][] = [
+  ['PENDIENTE', 'No entregado'],
+  ['EN_PROGRESO', 'En progreso'],
+  ['ENTREGADA', 'Envío en tiempo y forma'],
+  ['ENTREGADA_TARDE', 'Envío atrasado'],
+  ['CALIFICADA', 'Calificada'],
+];
+
 export const ETIQUETA_ESTADO_TAREA: Record<string, string> = {
   ABIERTA: 'Abierta',
   EN_PROGRESO: 'En progreso',
   HECHA: 'Hecha',
   DESCARTADA: 'Descartada',
 };
+
+/** Texto de salón legible a partir de aula o clave (CS109 → CS 109). */
+export function textoSalon(aula?: string | null, clave?: string | null): string | null {
+  if (aula?.trim()) return aula.trim();
+  if (!clave) return null;
+  return clave.replace(/^([A-Z]+)(\d)/, '$1 $2');
+}

@@ -29,7 +29,7 @@ export class DocumentosService {
   async aplicarBloques(
     documentoId: string,
     bloquesEntrada: { tipo: TipoBloque; texto: string }[],
-    opciones: { reindexar?: boolean } = {},
+    opciones: { reindexar?: boolean; origen?: 'GENERADO' | 'IMPORTADO' | 'EDITADO' } = {},
   ) {
     const doc = await this.prisma.documento.findUnique({
       where: { id: documentoId },
@@ -56,7 +56,7 @@ export class DocumentosService {
           pendienteDeEscribir: true,
           palabras,
           palabrasContenido,
-          origen: 'EDITADO',
+          origen: opciones.origen ?? 'EDITADO',
         },
       }),
     ]);

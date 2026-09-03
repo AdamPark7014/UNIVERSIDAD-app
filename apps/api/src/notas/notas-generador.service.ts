@@ -95,7 +95,9 @@ export class NotasGeneradorService {
       ...pie.map((b) => ({ tipo: b.tipo as TipoBloque, texto: b.texto })),
     ];
 
-    const actualizado = await this.documentos.aplicarBloques(notas.id, bloques);
+    const actualizado = await this.documentos.aplicarBloques(notas.id, bloques, {
+      origen: 'GENERADO',
+    });
     if (!actualizado) throw new NotFoundException('Error al guardar notas');
 
     let escritoDisco = false;

@@ -9,6 +9,7 @@ const RESUMEN_MATERIA = {
     nombre: true,
     color: true,
     carpeta: true,
+    aula: true,
     esLaboratorio: true,
   },
 };

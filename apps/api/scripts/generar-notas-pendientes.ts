@@ -103,7 +103,7 @@ async function main() {
             pendienteDeEscribir: !soloApp,
             palabras,
             palabrasContenido,
-            origen: 'EDITADO',
+            origen: 'GENERADO',
           },
         }),
       ]);

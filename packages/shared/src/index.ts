@@ -32,7 +32,16 @@ export type EstadoEvaluacion =
   | 'PENDIENTE'
   | 'EN_PROGRESO'
   | 'ENTREGADA'
+  | 'ENTREGADA_TARDE'
   | 'CALIFICADA';
+
+export const ETIQUETA_ESTADO_EVALUACION: Record<EstadoEvaluacion, string> = {
+  PENDIENTE: 'No entregado',
+  EN_PROGRESO: 'En progreso',
+  ENTREGADA: 'Envío en tiempo y forma',
+  ENTREGADA_TARDE: 'Envío atrasado',
+  CALIFICADA: 'Calificada',
+};
 
 export interface BloqueDTO {
   id: string;

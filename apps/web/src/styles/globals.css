@@ -32,8 +32,8 @@
   --radio-tarjeta: 12px;
   --radio-boton: 8px;
 
-  --contenedor: 1180px;
-  --barra: 264px;
+  --contenedor: 1280px;
+  --barra: 288px;
 }
 
 * {
@@ -50,8 +50,8 @@ body {
   background: var(--papel);
   color: var(--tinta);
   font-family: var(--fuente-cuerpo), system-ui, sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -65,15 +65,15 @@ h3 {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 36px;
 }
 h2 {
-  font-size: 24px;
+  font-size: 26px;
 }
 h3 {
   font-family: var(--fuente-cuerpo), system-ui, sans-serif;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 18px;
 }
 
 a {
@@ -434,10 +434,10 @@ textarea:focus {
   border-radius: var(--radio-tarjeta);
   padding: 48px 56px;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
   color: #111;
-  max-width: 780px;
+  max-width: 860px;
 }
 .hoja .docx-titulo {
   font-family: Arial, Helvetica, sans-serif;
@@ -1024,8 +1024,8 @@ textarea:focus {
 /* ---------------------------------------------------------------- biblioteca */
 .biblioteca {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: var(--e2);
+  grid-template-columns: 400px 1fr;
+  gap: var(--e3);
   align-items: start;
 }
 @media (max-width: 1080px) {
@@ -1035,8 +1035,8 @@ textarea:focus {
 .lista-libros {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: calc(100vh - 260px);
+  gap: 8px;
+  max-height: calc(100vh - 240px);
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -1062,23 +1062,22 @@ textarea:focus {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   text-align: left;
   border: 0;
   background: none;
   font-family: inherit;
-  padding: 10px 12px;
+  padding: 14px 16px;
   cursor: pointer;
   color: var(--tinta);
 }
 .libro-cuerpo:disabled { cursor: default; }
 .libro-titulo {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  line-height: 1.35;
-  /* dos renglones: los títulos académicos son larguísimos */
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1433,4 +1432,195 @@ textarea:focus {
     gap: var(--e2);
     min-height: auto;
   }
+}
+
+/* --- UI ampliadas: materias, examenes, guias, pronunciacion --- */
+.etiqueta-nav.columna-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.25;
+}
+.salon-nav {
+  font-size: 11px;
+  opacity: 0.55;
+  font-family: var(--fuente-mono), monospace;
+  letter-spacing: 0.02em;
+}
+.nav-destacado {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+.etiqueta-materia {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+.etiqueta-materia.compacta .etiqueta-materia-nombre {
+  font-size: 14px;
+  font-weight: 500;
+}
+.etiqueta-materia-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.etiqueta-materia-salon {
+  font-size: 12px;
+  font-family: var(--fuente-mono), monospace;
+}
+.insignia.examen {
+  background: #f3e6d8;
+  color: #8a4b1f;
+  border: 1px solid #e8d0b8;
+}
+tr.fila-examen td {
+  background: rgba(31, 95, 78, 0.04);
+}
+.select-estado {
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--linea);
+  background: var(--papel);
+  max-width: 220px;
+  width: 100%;
+}
+.select-estado.vencida {
+  border-color: var(--alerta);
+  color: var(--alerta);
+}
+.tabla-evaluaciones td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  vertical-align: middle;
+}
+.rejilla-examenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.tarjeta-examen-prioridad {
+  display: block;
+  padding: 16px 18px;
+  border: 1px solid var(--linea);
+  border-left: 4px solid var(--pino);
+  border-radius: var(--radio-tarjeta);
+  background: var(--papel);
+  color: inherit;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.tarjeta-examen-prioridad:hover {
+  background: var(--papel-hueso);
+  color: inherit;
+}
+.panel-guias-examen .rejilla-guias {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.tarjeta-guia-examen {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-tarjeta);
+  background: var(--papel-hueso);
+  color: inherit;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.tarjeta-guia-examen:hover {
+  border-color: var(--pino);
+  background: var(--musgo);
+  color: inherit;
+}
+.tarjeta-guia-cuerpo {
+  flex: 1;
+  min-width: 0;
+}
+.tarjeta-guia-cuerpo strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.sello.origen {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--fuente-mono), monospace;
+}
+.sello.origen-sistema {
+  background: #e7eef8;
+  color: #2a4d7a;
+}
+.sello.origen-usuario {
+  background: #e7f3ea;
+  color: #1f5f4e;
+}
+.sello.origen-word {
+  background: #f1eee6;
+  color: #5b6660;
+}
+.panel-pronunciacion {
+  padding: 20px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-tarjeta);
+  background: linear-gradient(180deg, #f7faf8 0%, var(--papel) 100%);
+}
+.grupo-pronunciacion {
+  margin-top: 18px;
+}
+.grupo-pronunciacion h3 {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+.rejilla-frases {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.tarjeta-frase {
+  padding: 12px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  background: var(--papel);
+}
+.frase-de {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.frase-es {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.boton-pronunciar {
+  border: 1px solid var(--linea);
+  background: var(--papel-hueso);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--tinta);
+}
+.boton-pronunciar.chico {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.boton-pronunciar.activo,
+.boton-pronunciar:hover {
+  background: var(--musgo);
+  border-color: var(--pino);
+}
+.hoja {
+  font-size: 15px !important;
+  max-width: 860px;
+  padding: 28px 32px;
+}
+.area-notas {
+  font-size: 15px !important;
+  min-height: 420px;
 }

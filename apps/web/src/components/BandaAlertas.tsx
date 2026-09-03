@@ -44,7 +44,7 @@ export function BandaAlertas({ datos }: { datos: any }) {
           <span className="texto">
             <strong>{a.titulo}</strong>
             <span className="mini silencio" style={{ display: 'block' }}>
-              {a.materia ? `${a.materia.clave} · ` : ''}
+              {a.materia ? `${a.materia.nombre} · ` : ''}
               {a.detalle}
             </span>
           </span>

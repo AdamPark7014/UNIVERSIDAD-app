@@ -6,6 +6,8 @@ import { Icono } from '@/components/Icono';
 import { FilaSesion } from '@/components/FilaSesion';
 import { CardClaseHoy } from '@/components/CardClaseHoy';
 import { BandaAlertas } from '@/components/BandaAlertas';
+import { PanelGuiasExamen, type GuiaExamenItem } from '@/components/PanelGuiasExamen';
+import { EtiquetaMateria } from '@/components/EtiquetaMateria';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,16 +35,25 @@ interface Panel {
 }
 
 export default async function Pagina() {
-  const [panel, alertas] = await Promise.all([
+  const [panel, alertas, guias] = await Promise.all([
     obtenerSeguro<Panel>('/dashboard'),
     obtenerSeguro<any>('/alertas'),
+    obtenerSeguro<GuiaExamenItem[]>('/guias-examen'),
   ]);
   if (!panel) return <SinApi />;
 
   const { semestre, totales } = panel;
   const hoy = new Date();
-  const urgentes = panel.proximasEvaluaciones.filter((e) => diasDesdeHoy(e.fecha) <= 7);
-  const resto = panel.proximasEvaluaciones.filter((e) => diasDesdeHoy(e.fecha) > 7);
+  const examenes = panel.proximasEvaluaciones.filter((e) =>
+    ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
+  );
+  const otrasEntregas = panel.proximasEvaluaciones.filter(
+    (e) => !['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo),
+  );
+  const examenesSemana = examenes.filter((e) => diasDesdeHoy(e.fecha) <= 10);
+  const guiasPrioridad = (guias ?? []).filter((g) =>
+    ['PARCIAL', 'FINAL'].includes(g.tipo),
+  );
 
   return (
     <>
@@ -57,14 +68,23 @@ export default async function Pagina() {
               })}
             </div>
             <h1 style={{ marginTop: 8 }}>
-              {panel.sesionesHoy.length > 0
-                ? `Hoy tienes ${panel.sesionesHoy.length} ${panel.sesionesHoy.length === 1 ? 'clase' : 'clases'}`
-                : 'Hoy no tienes clases'}
+              {examenesSemana.length > 0
+                ? `${examenesSemana.length} examen${examenesSemana.length === 1 ? '' : 'es'} cerca`
+                : panel.sesionesHoy.length > 0
+                  ? `Hoy tienes ${panel.sesionesHoy.length} ${panel.sesionesHoy.length === 1 ? 'clase' : 'clases'}`
+                  : 'Hoy no tienes clases'}
             </h1>
+            {examenesSemana.length > 0 && (
+              <p className="sub" style={{ marginTop: 8 }}>
+                Prioridad: estudiar con las guías de examen. Las clases de hoy están más abajo.
+              </p>
+            )}
           </div>
           <div style={{ minWidth: 220 }}>
             <div className="fila entre mini silencio" style={{ marginBottom: 6 }}>
-              <span className="dato">Semana {semestre.semanaActual} de {semestre.totalSemanas}</span>
+              <span className="dato">
+                Semana {semestre.semanaActual} de {semestre.totalSemanas}
+              </span>
               <span className="dato">{semestre.avance}%</span>
             </div>
             <div className="avance">
@@ -76,7 +96,60 @@ export default async function Pagina() {
 
       {alertas && <BandaAlertas datos={alertas} />}
 
-      {/* --- lo de hoy, que es a lo que se entra --- */}
+      {/* --- EXÁMENES PRIMERO --- */}
+      <section className="bloque-examenes-prioridad" style={{ marginBottom: 40 }}>
+        <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
+          <div className="eyebrow">Exámenes próximos</div>
+          <Link href="/evaluaciones" className="boton chico">
+            Gestionar entregas
+          </Link>
+        </div>
+        {examenesSemana.length === 0 ? (
+          <div className="vacio">No hay exámenes en los próximos 10 días.</div>
+        ) : (
+          <div className="rejilla-examenes">
+            {examenesSemana.map((e) => (
+              <Link
+                key={e.id}
+                href="/evaluaciones"
+                className="tarjeta-examen-prioridad"
+                style={{ borderLeftColor: e.materia.color }}
+              >
+                <div className="fila entre" style={{ gap: 8, marginBottom: 8 }}>
+                  <span className="insignia examen">{ETIQUETA_EVAL[e.tipo] ?? e.tipo}</span>
+                  <span className="dato" style={{ color: 'var(--alerta)' }}>
+                    {cuandoTexto(e.fecha)}
+                  </span>
+                </div>
+                <EtiquetaMateria
+                  nombre={e.materia.nombre}
+                  aula={e.materia.aula}
+                  clave={e.materia.clave}
+                  color={e.materia.color}
+                  compacta
+                />
+                <strong style={{ display: 'block', marginTop: 8, fontSize: 17 }}>{e.titulo}</strong>
+                {e.peso != null && (
+                  <div className="mini silencio dato" style={{ marginTop: 4 }}>
+                    Peso {Number(e.peso)}%
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {(guiasPrioridad.length > 0 || (guias ?? []).length > 0) && (
+        <div style={{ marginBottom: 40 }}>
+          <PanelGuiasExamen
+            guias={guiasPrioridad.length ? guiasPrioridad : guias ?? []}
+            titulo="Guías de examen"
+            limite={8}
+          />
+        </div>
+      )}
+
       {panel.sesionesHoy.length > 0 && (
         <section className="bloque-hoy" style={{ marginBottom: 36 }}>
           <div className="eyebrow" style={{ marginBottom: 14 }}>Tu día</div>
@@ -88,44 +161,37 @@ export default async function Pagina() {
         </section>
       )}
 
-      {/* --- lo que requiere acción, si es que hay algo --- */}
-      {urgentes.length > 0 && (
+      {otrasEntregas.filter((e) => diasDesdeHoy(e.fecha) <= 7).length > 0 && (
         <section style={{ marginBottom: 36 }}>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>Requiere atención</div>
-          <div className="rejilla c2" style={{ alignItems: 'start' }}>
-            {urgentes.length > 0 && (
-              <div className="tarjeta aviso-suave">
-                <div className="fila" style={{ gap: 8, marginBottom: 12 }}>
-                  <Icono nombre="reloj" tamano={16} />
-                  <strong>
-                    {urgentes.length} {urgentes.length === 1 ? 'entrega' : 'entregas'} esta semana
-                  </strong>
-                </div>
-                <div className="pila" style={{ gap: 10 }}>
-                  {urgentes.map((e) => (
-                    <div key={e.id} className="fila entre" style={{ gap: 10 }}>
-                      <span style={{ minWidth: 0 }}>
-                        <span className="fila" style={{ gap: 6 }}>
-                          <span className="punto-materia" style={{ background: e.materia.color }} />
-                          <span className="mini silencio">{e.materia.clave}</span>
-                        </span>
-                        <span className="mini" style={{ display: 'block' }}>{e.titulo}</span>
+          <div className="eyebrow" style={{ marginBottom: 12 }}>Otras entregas esta semana</div>
+          <div className="tarjeta aviso-suave">
+            <div className="pila" style={{ gap: 12 }}>
+              {otrasEntregas
+                .filter((e) => diasDesdeHoy(e.fecha) <= 7)
+                .map((e) => (
+                  <div key={e.id} className="fila entre" style={{ gap: 10 }}>
+                    <span style={{ minWidth: 0 }}>
+                      <EtiquetaMateria
+                        nombre={e.materia.nombre}
+                        aula={e.materia.aula}
+                        clave={e.materia.clave}
+                        color={e.materia.color}
+                        compacta
+                      />
+                      <span className="mini" style={{ display: 'block', marginTop: 2 }}>
+                        {e.titulo}
                       </span>
-                      <span className="dato mini" style={{ flex: 'none', color: 'var(--alerta)' }}>
-                        {cuandoTexto(e.fecha)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-
+                    </span>
+                    <span className="dato mini" style={{ flex: 'none', color: 'var(--alerta)' }}>
+                      {cuandoTexto(e.fecha)}
+                    </span>
+                  </div>
+                ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* --- el resto de la semana --- */}
       <div className="rejilla c2" style={{ alignItems: 'start', marginBottom: 36 }}>
         <section>
           <div className="eyebrow" style={{ marginBottom: 12 }}>Lo que sigue</div>
@@ -142,35 +208,43 @@ export default async function Pagina() {
 
         <section>
           <div className="fila entre" style={{ marginBottom: 12 }}>
-            <div className="eyebrow">Más adelante</div>
-            <Link href="/evaluaciones" className="mini">Ver todas →</Link>
+            <div className="eyebrow">Más exámenes adelante</div>
+            <Link href="/evaluaciones" className="mini">
+              Ver todas →
+            </Link>
           </div>
-          {resto.length === 0 ? (
+          {examenes.filter((e) => diasDesdeHoy(e.fecha) > 10).length === 0 ? (
             <div className="vacio">Nada más en el horizonte.</div>
           ) : (
             <div className="tarjeta" style={{ padding: 0 }}>
               <table className="datos">
                 <tbody>
-                  {resto.map((e) => (
-                    <tr key={e.id}>
-                      <td style={{ width: 96 }}>
-                        <span className="fila" style={{ gap: 6 }}>
-                          <span className="punto-materia" style={{ background: e.materia.color }} />
-                          <span className="mini silencio">{e.materia.clave}</span>
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mini">{e.titulo}</span>
-                        <div className="mini silencio">
-                          {ETIQUETA_EVAL[e.tipo] ?? e.tipo}
-                          {e.peso ? ` · ${Number(e.peso)}%` : ''}
-                        </div>
-                      </td>
-                      <td className="dato mini silencio" style={{ width: 92, textAlign: 'right' }}>
-                        {cuandoTexto(e.fecha)}
-                      </td>
-                    </tr>
-                  ))}
+                  {examenes
+                    .filter((e) => diasDesdeHoy(e.fecha) > 10)
+                    .slice(0, 8)
+                    .map((e) => (
+                      <tr key={e.id}>
+                        <td style={{ minWidth: 140 }}>
+                          <EtiquetaMateria
+                            nombre={e.materia.nombre}
+                            aula={e.materia.aula}
+                            clave={e.materia.clave}
+                            color={e.materia.color}
+                            compacta
+                          />
+                        </td>
+                        <td>
+                          <span className="mini">{e.titulo}</span>
+                          <div className="mini silencio">
+                            {ETIQUETA_EVAL[e.tipo] ?? e.tipo}
+                            {e.peso ? ` · ${Number(e.peso)}%` : ''}
+                          </div>
+                        </td>
+                        <td className="dato mini silencio" style={{ width: 92, textAlign: 'right' }}>
+                          {cuandoTexto(e.fecha)}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -178,28 +252,26 @@ export default async function Pagina() {
         </section>
       </div>
 
-      {/* --- tareas propias --- */}
       {panel.tareasAbiertas.length > 0 && (
         <section>
           <div className="fila entre" style={{ marginBottom: 12 }}>
-            <div className="eyebrow">
-              Tareas propias · {totales.tareasAbiertas} abiertas
-            </div>
-            <Link href="/tareas" className="mini">Ver todas →</Link>
+            <div className="eyebrow">Tareas propias · {totales.tareasAbiertas} abiertas</div>
+            <Link href="/tareas" className="mini">
+              Ver todas →
+            </Link>
           </div>
           <div className="tarjeta" style={{ padding: 0 }}>
             <table className="datos">
               <tbody>
                 {panel.tareasAbiertas.slice(0, 6).map((t) => (
                   <tr key={t.id}>
-                    <td style={{ width: 96 }}>
-                      <span className="fila" style={{ gap: 6 }}>
-                        <span
-                          className="punto-materia"
-                          style={{ background: t.sesion.materia.color }}
-                        />
-                        <span className="mini silencio">{t.sesion.materia.clave}</span>
-                      </span>
+                    <td style={{ minWidth: 140 }}>
+                      <EtiquetaMateria
+                        nombre={t.sesion.materia.nombre}
+                        clave={t.sesion.materia.clave}
+                        color={t.sesion.materia.color}
+                        compacta
+                      />
                     </td>
                     <td>
                       <Link href={`/sesiones/${t.sesion.id}`}>{limpiar(t.texto)}</Link>
@@ -220,18 +292,19 @@ export default async function Pagina() {
           <span className="fila" style={{ gap: 8 }}>
             <Icono nombre="sync" tamano={16} />
             <span>
-              <strong>{totales.pendientesDeEscribir} documentos</strong> editados aquí
-              todavía no se escriben al .docx.
+              <strong>{totales.pendientesDeEscribir} documentos</strong> editados aquí todavía no se
+              escriben al .docx.
             </span>
           </span>
-          <Link href="/sync" className="boton chico">Escribir ahora</Link>
+          <Link href="/sync" className="boton chico">
+            Escribir ahora
+          </Link>
         </div>
       )}
     </>
   );
 }
 
-/** Los apuntes vienen con numeración manual ("1.- …"); en una lista estorba. */
 function limpiar(texto: string) {
   return texto.replace(/^\s*\d+\s*[.)-]+\s*/, '');
 }
