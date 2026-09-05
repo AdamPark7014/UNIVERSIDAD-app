@@ -12,6 +12,14 @@ import {
 } from '@/lib/formato';
 import { EtiquetaMateria } from './EtiquetaMateria';
 
+const CLASE_ESTADO: Record<string, string> = {
+  PENDIENTE: 'est-pendiente',
+  EN_PROGRESO: 'est-progreso',
+  ENTREGADA: 'est-ok',
+  ENTREGADA_TARDE: 'est-tarde',
+  CALIFICADA: 'est-calificada',
+};
+
 export function FilaEvaluacion({
   e,
   mostrarSelect = true,
@@ -28,6 +36,7 @@ export function FilaEvaluacion({
   const esExamen = ['PARCIAL', 'FINAL', 'QUIZ'].includes(e.tipo);
 
   const cambiar = async (nuevo: string) => {
+    if (nuevo === estado) return;
     const prev = estado;
     setEstado(nuevo);
     setGuardando(true);
@@ -44,13 +53,18 @@ export function FilaEvaluacion({
   };
 
   return (
-    <tr className={esExamen ? 'fila-examen' : undefined}>
-      <td className="dato mini">
-        {fechaLarga(e.fecha)}
-        <div
-          className={urge || vencida ? '' : 'silencio'}
-          style={urge || vencida ? { color: 'var(--alerta)' } : undefined}
-        >
+    <tr
+      className={[
+        esExamen ? 'fila-examen' : '',
+        vencida ? 'fila-vencida' : '',
+        urge ? 'fila-urge' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <td className="celda-fecha">
+        <div className="dato">{fechaLarga(e.fecha)}</div>
+        <div className={`cuando${urge || vencida ? ' urgente' : ' silencio'}`}>
           {cuandoTexto(e.fecha)}
           {vencida ? ' · vencida' : ''}
         </div>
@@ -66,20 +80,21 @@ export function FilaEvaluacion({
         />
       </td>
       <td>
-        <span className="fila" style={{ gap: 8, flexWrap: 'wrap' }}>
+        <div className="celda-titulo">
           {esExamen && <span className="insignia examen">Examen</span>}
-          <span>{e.titulo}</span>
-        </span>
-        {e.descripcion && <div className="mini silencio">{e.descripcion}</div>}
+          <span className="titulo-eval">{e.titulo}</span>
+        </div>
+        {e.descripcion && <div className="mini silencio desc-eval">{e.descripcion}</div>}
       </td>
       <td className="mini silencio">{ETIQUETA_EVAL[e.tipo] ?? e.tipo}</td>
-      <td className="dato mini">{e.peso ? `${Number(e.peso)}%` : ''}</td>
-      <td>
+      <td className="dato mini">{e.peso ? `${Number(e.peso)}%` : '—'}</td>
+      <td className="celda-estado">
         {mostrarSelect ? (
           <select
-            className={`select-estado${vencida ? ' vencida' : ''}`}
+            className={`select-estado ${CLASE_ESTADO[estado] ?? ''}${vencida ? ' vencida' : ''}`}
             value={estado}
             disabled={guardando}
+            aria-label={`Estado de ${e.titulo}`}
             onChange={(ev) => cambiar(ev.target.value)}
           >
             {ESTADOS_EVAL_OPCIONES.map(([v, etq]) => (
@@ -89,7 +104,9 @@ export function FilaEvaluacion({
             ))}
           </select>
         ) : (
-          <span className="insignia gris">{ETIQUETA_ESTADO_EVAL[estado] ?? estado}</span>
+          <span className={`chip-estado ${CLASE_ESTADO[estado] ?? ''}`}>
+            {ETIQUETA_ESTADO_EVAL[estado] ?? estado}
+          </span>
         )}
       </td>
     </tr>

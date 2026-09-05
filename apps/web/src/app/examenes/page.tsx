@@ -28,36 +28,54 @@ export default async function Pagina() {
         e.estado !== 'EN_PROGRESO',
     )
     .reverse();
+  const urgentes = activos.filter((e) => diasDesdeHoy(e.fecha) <= 10).length;
 
   return (
     <>
-      <header className="cabecera-pagina">
-        <div className="eyebrow">Parciales · quizzes · finales</div>
-        <h1>Exámenes</h1>
-        <p className="sub">
-          Solo exámenes. Las tareas, prácticas y reportes están en{' '}
-          <Link href="/entregas">Entregas</Link>.
-        </p>
+      <header className="cabecera-pagina cabecera-amplia">
+        <div className="fila entre" style={{ alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div className="eyebrow">Parciales · quizzes · finales</div>
+            <h1>Exámenes</h1>
+            <p className="sub">
+              Estudia con las guías y marca el estado cuando termines. Las entregas van aparte en{' '}
+              <Link href="/entregas">Entregas</Link>.
+            </p>
+          </div>
+          <div className="chips-resumen">
+            <span className="chip-resumen">
+              <strong>{activos.length}</strong> activos
+            </span>
+            {urgentes > 0 && (
+              <span className="chip-resumen alerta">
+                <strong>{urgentes}</strong> en ≤10 días
+              </span>
+            )}
+            <span className="chip-resumen">
+              <strong>{(guias ?? []).length}</strong> guías
+            </span>
+          </div>
+        </div>
       </header>
 
-      <div id="guias-examen" style={{ marginBottom: 40 }}>
+      <div id="guias-examen" className="bloque-seccion">
         <PanelGuiasExamen guias={guias ?? []} titulo="Guías de examen" mostrarMateria />
       </div>
 
-      <section style={{ marginBottom: 40 }}>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>
+      <section className="bloque-seccion">
+        <div className="eyebrow" style={{ marginBottom: 14 }}>
           Por delante · {activos.length}
         </div>
         {activos.length === 0 ? (
-          <div className="vacio">No hay exámenes pendientes.</div>
+          <div className="vacio vacio-grande">No hay exámenes pendientes. Buen momento para adelantar.</div>
         ) : (
           <Tabla filas={activos} />
         )}
       </section>
 
       {cerrados.length > 0 && (
-        <section>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>Ya pasaron</div>
+        <section className="bloque-seccion">
+          <div className="eyebrow" style={{ marginBottom: 14 }}>Ya pasaron</div>
           <Tabla filas={cerrados} />
         </section>
       )}
@@ -67,7 +85,7 @@ export default async function Pagina() {
 
 function Tabla({ filas }: { filas: any[] }) {
   return (
-    <div className="tarjeta" style={{ padding: 0 }}>
+    <div className="tarjeta tarjeta-tabla">
       <table className="datos tabla-evaluaciones">
         <thead>
           <tr>
@@ -76,7 +94,7 @@ function Tabla({ filas }: { filas: any[] }) {
             <th>Examen</th>
             <th style={{ width: 90 }}>Tipo</th>
             <th style={{ width: 60 }}>Peso</th>
-            <th style={{ width: 200 }}>Estado</th>
+            <th style={{ width: 210 }}>Estado</th>
           </tr>
         </thead>
         <tbody>

@@ -24,37 +24,52 @@ export default async function Pagina() {
         e.estado !== 'EN_PROGRESO',
     )
     .reverse();
+  const sinEntregar = activas.filter((e) => e.estado === 'PENDIENTE').length;
 
   return (
     <>
-      <header className="cabecera-pagina">
-        <div className="eyebrow">Tareas · prácticas · proyectos · reportes</div>
-        <h1>Entregas</h1>
-        <p className="sub">
-          Marca cada una: <strong>No entregado</strong>,{' '}
-          <strong>Envío en tiempo y forma</strong> o <strong>Envío atrasado</strong>. Los exámenes
-          están en <Link href="/examenes">Exámenes</Link>.
-        </p>
+      <header className="cabecera-pagina cabecera-amplia">
+        <div className="fila entre" style={{ alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div className="eyebrow">Tareas · prácticas · proyectos · reportes</div>
+            <h1>Entregas</h1>
+            <p className="sub">
+              Elige el estado de cada una. Los exámenes están en{' '}
+              <Link href="/examenes">Exámenes</Link>.
+            </p>
+          </div>
+          <div className="chips-resumen">
+            <span className="chip-resumen">
+              <strong>{activas.length}</strong> activas
+            </span>
+            {sinEntregar > 0 && (
+              <span className="chip-resumen alerta">
+                <strong>{sinEntregar}</strong> sin entregar
+              </span>
+            )}
+          </div>
+        </div>
       </header>
 
-      <section style={{ marginBottom: 40 }}>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>
+      <section className="bloque-seccion">
+        <div className="eyebrow" style={{ marginBottom: 10 }}>
           Activas · {activas.length}
         </div>
-        <p className="mini silencio" style={{ marginBottom: 12 }}>
-          Si no has entregado nada, déjalas en «No entregado». Cuando envíes, elige si fue a tiempo o
-          atrasado.
+        <p className="leyenda-estados">
+          <span className="chip-estado est-pendiente">No entregado</span>
+          <span className="chip-estado est-ok">En tiempo y forma</span>
+          <span className="chip-estado est-tarde">Atrasado</span>
         </p>
         {activas.length === 0 ? (
-          <div className="vacio">Nada pendiente aquí.</div>
+          <div className="vacio vacio-grande">Nada pendiente. Todo al corriente.</div>
         ) : (
           <Tabla filas={activas} />
         )}
       </section>
 
       {cerradas.length > 0 && (
-        <section>
-          <div className="eyebrow" style={{ marginBottom: 12 }}>Ya cerradas</div>
+        <section className="bloque-seccion">
+          <div className="eyebrow" style={{ marginBottom: 14 }}>Ya cerradas</div>
           <Tabla filas={cerradas} />
         </section>
       )}
@@ -64,7 +79,7 @@ export default async function Pagina() {
 
 function Tabla({ filas }: { filas: any[] }) {
   return (
-    <div className="tarjeta" style={{ padding: 0 }}>
+    <div className="tarjeta tarjeta-tabla">
       <table className="datos tabla-evaluaciones">
         <thead>
           <tr>
@@ -73,7 +88,7 @@ function Tabla({ filas }: { filas: any[] }) {
             <th>Qué</th>
             <th style={{ width: 90 }}>Tipo</th>
             <th style={{ width: 60 }}>Peso</th>
-            <th style={{ width: 200 }}>Estado de envío</th>
+            <th style={{ width: 210 }}>Estado de envío</th>
           </tr>
         </thead>
         <tbody>

@@ -16,18 +16,52 @@ interface MateriaNav {
   _count?: { sesiones: number };
 }
 
-const SECCIONES = [
-  { href: '/', etiqueta: 'Panel', icono: 'panel' as const },
-  { href: '/examenes', etiqueta: 'Exámenes', icono: 'evaluaciones' as const, destacado: true },
-  { href: '/entregas', etiqueta: 'Entregas', icono: 'tareas' as const },
-  { href: '/buscar', etiqueta: 'Buscar', icono: 'buscar' as const },
-  { href: '/calendario', etiqueta: 'Calendario', icono: 'calendario' as const },
-  { href: '/horario', etiqueta: 'Horario', icono: 'horario' as const },
-  { href: '/notas-pendientes', etiqueta: 'Notas pendientes', icono: 'alerta' as const },
-  { href: '/libros', etiqueta: 'Biblioteca', icono: 'guia' as const },
-  { href: '/tareas', etiqueta: 'Tareas propias', icono: 'tareas' as const },
-  { href: '/estadisticas', etiqueta: 'Estadísticas', icono: 'estadisticas' as const },
-  { href: '/sync', etiqueta: 'Sincronización', icono: 'sync' as const },
+type IconoNombre =
+  | 'panel'
+  | 'buscar'
+  | 'calendario'
+  | 'horario'
+  | 'tareas'
+  | 'evaluaciones'
+  | 'estadisticas'
+  | 'sync'
+  | 'alerta'
+  | 'guia';
+
+type ItemNav = {
+  href: string;
+  etiqueta: string;
+  icono: IconoNombre;
+  destacado?: boolean;
+};
+
+const GRUPOS: { titulo: string; items: ItemNav[] }[] = [
+  {
+    titulo: 'Hoy',
+    items: [
+      { href: '/', etiqueta: 'Panel', icono: 'panel' },
+      { href: '/examenes', etiqueta: 'Exámenes', icono: 'evaluaciones', destacado: true },
+      { href: '/entregas', etiqueta: 'Entregas', icono: 'tareas' },
+    ],
+  },
+  {
+    titulo: 'Estudiar',
+    items: [
+      { href: '/libros', etiqueta: 'Biblioteca', icono: 'guia' },
+      { href: '/notas-pendientes', etiqueta: 'Notas pendientes', icono: 'alerta' },
+      { href: '/tareas', etiqueta: 'Tareas propias', icono: 'tareas' },
+      { href: '/buscar', etiqueta: 'Buscar', icono: 'buscar' },
+    ],
+  },
+  {
+    titulo: 'Agenda',
+    items: [
+      { href: '/calendario', etiqueta: 'Calendario', icono: 'calendario' },
+      { href: '/horario', etiqueta: 'Horario', icono: 'horario' },
+      { href: '/estadisticas', etiqueta: 'Estadísticas', icono: 'estadisticas' },
+      { href: '/sync', etiqueta: 'Sincronización', icono: 'sync' },
+    ],
+  },
 ];
 
 function salonDe(m: MateriaNav) {
@@ -66,83 +100,96 @@ export function BarraLateral({
 
   const activo = (href: string) => (href === '/' ? ruta === '/' : ruta.startsWith(href));
 
+  const badge = (href: string) => {
+    if (href === '/sync' && pendientes > 0) return { n: pendientes, alerta: false };
+    if (href === '/notas-pendientes' && notasPendientes > 0)
+      return { n: notasPendientes, alerta: true };
+    if (href === '/examenes' && examenesCerca > 0) return { n: examenesCerca, alerta: true };
+    if (href === '/entregas' && entregasCerca > 0) return { n: entregasCerca, alerta: true };
+    return null;
+  };
+
   return (
     <div className="barra-contenido">
-      <Link href="/" style={{ display: 'block', color: 'inherit' }}>
+      <Link href="/" className="barra-marca">
         <div className="marca">Universidad</div>
         <div className="marca-sub">Otoño 2026</div>
       </Link>
 
-      <input
-        ref={cajaBusqueda}
-        className="busqueda-barra"
-        type="text"
-        placeholder="Buscar…  Ctrl+K"
-        onKeyDown={(e) => {
-          const v = (e.target as HTMLInputElement).value.trim();
-          if (e.key === 'Enter' && v.length >= 2) {
-            router.push(`/buscar?q=${encodeURIComponent(v)}`);
-          }
-        }}
-      />
+      <label className="barra-buscar-wrap">
+        <span className="sr-only">Buscar</span>
+        <input
+          ref={cajaBusqueda}
+          className="busqueda-barra"
+          type="search"
+          placeholder="Buscar…  ⌘K"
+          onKeyDown={(e) => {
+            const v = (e.target as HTMLInputElement).value.trim();
+            if (e.key === 'Enter' && v.length >= 2) {
+              router.push(`/buscar?q=${encodeURIComponent(v)}`);
+            }
+          }}
+        />
+      </label>
 
-      <nav>
-        {SECCIONES.map((s) => (
-          <Link
-            key={s.href}
-            href={s.href}
-            className={`${activo(s.href) ? 'activo' : ''}${s.destacado ? ' nav-destacado' : ''}`}
-            aria-current={activo(s.href) ? 'page' : undefined}
-          >
-            <span className="fila" style={{ gap: 10, minWidth: 0 }}>
-              <Icono nombre={s.icono} tamano={16} className="icono-nav" />
-              <span className="etiqueta-nav">{s.etiqueta}</span>
-            </span>
-            {s.href === '/sync' && pendientes > 0 && (
-              <span className="conteo pendiente">{pendientes}</span>
-            )}
-            {s.href === '/notas-pendientes' && notasPendientes > 0 && (
-              <span className="conteo pendiente alerta">{notasPendientes}</span>
-            )}
-            {s.href === '/examenes' && examenesCerca > 0 && (
-              <span className="conteo pendiente alerta">{examenesCerca}</span>
-            )}
-            {s.href === '/entregas' && entregasCerca > 0 && (
-              <span className="conteo pendiente alerta">{entregasCerca}</span>
-            )}
-          </Link>
-        ))}
-      </nav>
+      {GRUPOS.map((g) => (
+        <div key={g.titulo} className="barra-grupo">
+          <div className="grupo">{g.titulo}</div>
+          <nav>
+            {g.items.map((s) => {
+              const b = badge(s.href);
+              return (
+                <Link
+                  key={s.href}
+                  href={s.href}
+                  className={`${activo(s.href) ? 'activo' : ''}${s.destacado ? ' nav-destacado' : ''}`}
+                  aria-current={activo(s.href) ? 'page' : undefined}
+                >
+                  <span className="fila" style={{ gap: 10, minWidth: 0 }}>
+                    <Icono nombre={s.icono} tamano={16} className="icono-nav" />
+                    <span className="etiqueta-nav">{s.etiqueta}</span>
+                  </span>
+                  {b && (
+                    <span className={`conteo pendiente${b.alerta ? ' alerta' : ''}`}>{b.n}</span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      ))}
 
-      <div className="grupo">Materias</div>
-      <nav>
-        {materias.map((m) => (
-          <Link
-            key={m.id}
-            href={`/materias/${m.codigo}`}
-            className={ruta === `/materias/${m.codigo}` ? 'activo' : ''}
-            title={`${m.nombre} · Salón ${salonDe(m)}`}
-            aria-current={ruta === `/materias/${m.codigo}` ? 'page' : undefined}
-          >
-            <span className="fila" style={{ gap: 10, minWidth: 0 }}>
-              <span className="punto-materia" style={{ background: m.color }} />
-              <span className="etiqueta-nav columna-nav">
-                <span>
-                  {m.esLaboratorio
-                    ? `Lab · ${m.nombre.replace(/^Laboratorio de\s+/i, '')}`
-                    : m.nombre}
+      <div className="barra-grupo">
+        <div className="grupo">Materias</div>
+        <nav className="nav-materias">
+          {materias.map((m) => (
+            <Link
+              key={m.id}
+              href={`/materias/${m.codigo}`}
+              className={ruta === `/materias/${m.codigo}` ? 'activo' : ''}
+              title={`${m.nombre} · Salón ${salonDe(m)}`}
+              aria-current={ruta === `/materias/${m.codigo}` ? 'page' : undefined}
+            >
+              <span className="fila" style={{ gap: 10, minWidth: 0 }}>
+                <span className="punto-materia" style={{ background: m.color }} />
+                <span className="etiqueta-nav columna-nav">
+                  <span>
+                    {m.esLaboratorio
+                      ? `Lab · ${m.nombre.replace(/^Laboratorio de\s+/i, '')}`
+                      : m.nombre}
+                  </span>
+                  <span className="salon-nav">Salón {salonDe(m)}</span>
                 </span>
-                <span className="salon-nav">Salón {salonDe(m)}</span>
               </span>
+            </Link>
+          ))}
+          {materias.length === 0 && (
+            <span className="conteo" style={{ padding: '9px 16px' }}>
+              La API no responde
             </span>
-          </Link>
-        ))}
-        {materias.length === 0 && (
-          <span className="conteo" style={{ padding: '9px 16px' }}>
-            La API no responde
-          </span>
-        )}
-      </nav>
+          )}
+        </nav>
+      </div>
     </div>
   );
 }
