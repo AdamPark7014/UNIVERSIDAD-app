@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icono } from './Icono';
 
 interface MateriaNav {
@@ -85,8 +85,11 @@ export function BarraLateral({
   const ruta = usePathname();
   const router = useRouter();
   const cajaBusqueda = useRef<HTMLInputElement>(null);
+  const [atajoBuscar, setAtajoBuscar] = useState('Ctrl K');
 
   useEffect(() => {
+    const mac = /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent);
+    setAtajoBuscar(mac ? '⌘K' : 'Ctrl K');
     const alTeclear = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -122,7 +125,7 @@ export function BarraLateral({
           ref={cajaBusqueda}
           className="busqueda-barra"
           type="search"
-          placeholder="Buscar…  ⌘K"
+          placeholder={`Buscar…  ${atajoBuscar}`}
           onKeyDown={(e) => {
             const v = (e.target as HTMLInputElement).value.trim();
             if (e.key === 'Enter' && v.length >= 2) {

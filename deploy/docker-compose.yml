@@ -1,5 +1,7 @@
 # UNIVERSIDAD-app — school.adam.delpozodelvalle.com
 #   docker compose -f deploy/docker-compose.yml up -d --build
+# Tras el deploy, asegurar la ruta Traefik (si falta → 404 público):
+#   bash deploy/asegurar-traefik-school.sh
 
 name: universidad
 

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { obtenerSeguro } from '@/lib/api';
 import { SinApi } from '@/components/SinApi';
 import { FilaEvaluacion } from '@/components/FilaEvaluacion';
+import { SeccionCabecera } from '@/components/SeccionCabecera';
 import { diasDesdeHoy } from '@/lib/formato';
 import { esExamen } from '@/lib/evaluaciones';
 
@@ -52,13 +53,12 @@ export default async function Pagina() {
       </header>
 
       <section className="bloque-seccion">
-        <div className="eyebrow" style={{ marginBottom: 10 }}>
-          Activas · {activas.length}
-        </div>
+        <SeccionCabecera eyebrow={`Activas · ${activas.length}`} />
         <p className="leyenda-estados">
           <span className="chip-estado est-pendiente">No entregado</span>
           <span className="chip-estado est-ok">En tiempo y forma</span>
           <span className="chip-estado est-tarde">Atrasado</span>
+          <span className="chip-estado est-calificada">Calificada</span>
         </p>
         {activas.length === 0 ? (
           <div className="vacio vacio-grande">Nada pendiente. Todo al corriente.</div>
@@ -69,7 +69,7 @@ export default async function Pagina() {
 
       {cerradas.length > 0 && (
         <section className="bloque-seccion">
-          <div className="eyebrow" style={{ marginBottom: 14 }}>Ya cerradas</div>
+          <SeccionCabecera eyebrow={`Ya cerradas · ${cerradas.length}`} />
           <Tabla filas={cerradas} />
         </section>
       )}
@@ -79,7 +79,7 @@ export default async function Pagina() {
 
 function Tabla({ filas }: { filas: any[] }) {
   return (
-    <div className="tarjeta tarjeta-tabla">
+    <div className="tarjeta tarjeta-tabla wrap-tabla-scroll">
       <table className="datos tabla-evaluaciones">
         <thead>
           <tr>

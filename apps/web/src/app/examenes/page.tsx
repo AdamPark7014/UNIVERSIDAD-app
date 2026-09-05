@@ -3,6 +3,7 @@ import { obtenerSeguro } from '@/lib/api';
 import { SinApi } from '@/components/SinApi';
 import { FilaEvaluacion } from '@/components/FilaEvaluacion';
 import { PanelGuiasExamen, type GuiaExamenItem } from '@/components/PanelGuiasExamen';
+import { SeccionCabecera } from '@/components/SeccionCabecera';
 import { diasDesdeHoy } from '@/lib/formato';
 import { esExamen } from '@/lib/evaluaciones';
 
@@ -63,9 +64,7 @@ export default async function Pagina() {
       </div>
 
       <section className="bloque-seccion">
-        <div className="eyebrow" style={{ marginBottom: 14 }}>
-          Por delante · {activos.length}
-        </div>
+        <SeccionCabecera eyebrow={`Por delante · ${activos.length}`} />
         {activos.length === 0 ? (
           <div className="vacio vacio-grande">No hay exámenes pendientes. Buen momento para adelantar.</div>
         ) : (
@@ -75,7 +74,7 @@ export default async function Pagina() {
 
       {cerrados.length > 0 && (
         <section className="bloque-seccion">
-          <div className="eyebrow" style={{ marginBottom: 14 }}>Ya pasaron</div>
+          <SeccionCabecera eyebrow={`Ya pasaron · ${cerrados.length}`} />
           <Tabla filas={cerrados} />
         </section>
       )}
@@ -85,7 +84,7 @@ export default async function Pagina() {
 
 function Tabla({ filas }: { filas: any[] }) {
   return (
-    <div className="tarjeta tarjeta-tabla">
+    <div className="tarjeta tarjeta-tabla wrap-tabla-scroll">
       <table className="datos tabla-evaluaciones">
         <thead>
           <tr>

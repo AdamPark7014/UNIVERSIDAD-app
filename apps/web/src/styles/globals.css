@@ -1929,6 +1929,25 @@ tr.fila-examen td {
   padding: 16px 18px;
 }
 
+.wrap-tabla-scroll {
+  overflow: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+.tabla-evaluaciones thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 0 var(--linea);
+}
+.select-estado:focus-visible,
+.busqueda-barra:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--pino);
+  outline-offset: 2px;
+}
+
 .tarjeta-guia-examen {
   box-shadow: 0 4px 14px rgba(20, 33, 28, 0.03);
 }
