@@ -1,25 +1,23 @@
-/* Sistema de diseño Nexara, adaptado a una aplicación interna.
-   La paleta y la tipografía se respetan tal cual; lo único que cambia es la
-   densidad: una herramienta de trabajo necesita más información por pantalla
-   que una página de venta, así que el espaciado de sección de 128px no aplica. */
+/* App de estudio: tinta fría + acento slate (el pino Nexara se sentía
+   demasiado verde para una herramienta académica). Densidad de producto. */
 
 :root {
-  /* paleta — exacta */
-  --tinta: #14211c;
-  --pino: #1f5f4e;
-  --pino-claro: #2f7a65;
-  --papel: #faf9f6;
-  --papel-hueso: #f1f0ea;
-  --musgo: #dce6dd;
-  --pizarra: #5b6660;
-  --niebla: #9fb0a8;
-  --linea: #e3e5df;
+  /* paleta — tinta / slate / piedra */
+  --tinta: #12151a;
+  --pino: #2a4060;
+  --pino-claro: #3b5578;
+  --papel: #f6f6f4;
+  --papel-hueso: #eeefec;
+  --musgo: #e6e8ec;
+  --pizarra: #5a6169;
+  --niebla: #959da6;
+  --linea: #e1e3e6;
   --linea-oscura: rgba(255, 255, 255, 0.08);
 
-  /* estados — derivados, en la misma familia sobria */
+  /* estados */
   --alerta: #a6432f;
   --aviso: #9a6b1f;
-  --exito: var(--pino);
+  --exito: #2f6b4f;
 
   /* espaciado, base 8 */
   --e1: 8px;
@@ -411,7 +409,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--pino);
-  box-shadow: 0 0 0 3px rgba(31, 95, 78, 0.12);
+  box-shadow: 0 0 0 3px rgba(42, 64, 96, 0.14);
 }
 
 /* --- barra de avance --- */
@@ -965,7 +963,7 @@ textarea:focus {
 }
 .caja-busqueda:focus-within {
   border-color: var(--pino);
-  box-shadow: 0 0 0 3px rgba(31, 95, 78, 0.1);
+  box-shadow: 0 0 0 3px rgba(42, 64, 96, 0.12);
 }
 .caja-busqueda input {
   flex: 1;
@@ -1151,11 +1149,11 @@ textarea:focus {
   background: var(--papel);
   padding: 16px 18px;
   margin-bottom: var(--e4);
-  box-shadow: 0 6px 18px rgba(20, 33, 28, 0.04);
+  box-shadow: 0 6px 18px rgba(18, 21, 26, 0.04);
 }
 .banda-alertas.tranquila {
   border-left-color: var(--pino);
-  background: linear-gradient(180deg, #f4f8f5 0%, var(--papel) 100%);
+  background: linear-gradient(180deg, #f3f5f8 0%, var(--papel) 100%);
 }
 .alerta-fila {
   display: flex;
@@ -1249,7 +1247,7 @@ textarea:focus {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .tarjeta:hover {
-  box-shadow: 0 4px 20px rgba(20, 33, 28, 0.06);
+  box-shadow: 0 4px 20px rgba(18, 21, 26, 0.06);
 }
 
 .cabecera-pagina h1 {
@@ -1295,7 +1293,7 @@ textarea:focus {
     position: fixed;
     inset: 0;
     z-index: 90;
-    background: rgba(20, 33, 28, 0.45);
+    background: rgba(18, 21, 26, 0.45);
     border: none;
     opacity: 0;
     pointer-events: none;
@@ -1367,7 +1365,7 @@ textarea:focus {
   transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 .card-clase-hoy:hover {
-  box-shadow: 0 8px 28px rgba(20, 33, 28, 0.08);
+  box-shadow: 0 8px 28px rgba(18, 21, 26, 0.08);
   transform: translateY(-2px);
   color: inherit;
 }
@@ -1489,7 +1487,7 @@ textarea:focus {
   border: 1px solid #e8d0b8;
 }
 tr.fila-examen td {
-  background: rgba(31, 95, 78, 0.04);
+  background: rgba(42, 64, 96, 0.04);
 }
 .select-estado {
   font-size: 13px;
@@ -1568,8 +1566,8 @@ tr.fila-examen td {
   color: #2a4d7a;
 }
 .sello.origen-usuario {
-  background: #e7f3ea;
-  color: #1f5f4e;
+  background: #e8eef6;
+  color: #2a4060;
 }
 .sello.origen-word {
   background: #f1eee6;
@@ -1579,7 +1577,7 @@ tr.fila-examen td {
   padding: 20px;
   border: 1px solid var(--linea);
   border-radius: var(--radio-tarjeta);
-  background: linear-gradient(180deg, #f7faf8 0%, var(--papel) 100%);
+  background: linear-gradient(180deg, #f4f5f7 0%, var(--papel) 100%);
 }
 .grupo-pronunciacion {
   margin-top: 18px;
@@ -1679,7 +1677,7 @@ tr.fila-examen td {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 .nav-destacado:not(.activo) {
-  background: rgba(47, 122, 101, 0.22);
+  background: rgba(59, 85, 120, 0.28);
   color: var(--papel);
 }
 .conteo.pendiente {
@@ -1732,7 +1730,7 @@ tr.fila-examen td {
 }
 
 .tarjeta {
-  box-shadow: 0 1px 0 rgba(20, 33, 28, 0.03);
+  box-shadow: 0 1px 0 rgba(18, 21, 26, 0.03);
 }
 .tarjeta-tabla {
   padding: 0;
@@ -1802,9 +1800,9 @@ tr.fila-examen td {
 }
 .chip-estado.est-ok,
 .select-estado.est-ok {
-  background: #e7f2eb;
-  color: #1f5f4e;
-  border-color: #c5ddcf;
+  background: #e8f1ec;
+  color: var(--exito);
+  border-color: #c5d9cd;
 }
 .chip-estado.est-tarde,
 .select-estado.est-tarde {
@@ -1870,12 +1868,12 @@ tr.fila-examen td {
 
 .tarjeta-examen-prioridad {
   padding: 18px 18px 16px;
-  box-shadow: 0 8px 24px rgba(20, 33, 28, 0.04);
+  box-shadow: 0 8px 24px rgba(18, 21, 26, 0.04);
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 .tarjeta-examen-prioridad:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(20, 33, 28, 0.08);
+  box-shadow: 0 12px 28px rgba(18, 21, 26, 0.08);
   background: #fff;
 }
 .titulo-card-examen {
@@ -1949,14 +1947,14 @@ button:focus-visible {
 }
 
 .tarjeta-guia-examen {
-  box-shadow: 0 4px 14px rgba(20, 33, 28, 0.03);
+  box-shadow: 0 4px 14px rgba(18, 21, 26, 0.03);
 }
 .tarjeta-guia-examen:hover {
   transform: translateY(-1px);
 }
 
 .panel-pronunciacion {
-  box-shadow: 0 8px 24px rgba(20, 33, 28, 0.04);
+  box-shadow: 0 8px 24px rgba(18, 21, 26, 0.04);
 }
 .tarjeta-frase {
   transition: border-color 140ms ease, background 140ms ease;
