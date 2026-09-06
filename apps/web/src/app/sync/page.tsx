@@ -1,6 +1,7 @@
 import { obtenerSeguro } from '@/lib/api';
 import { SinApi } from '@/components/SinApi';
 import { ControlesSync } from '@/components/ControlesSync';
+import { PanelAutomatizacion } from '@/components/PanelAutomatizacion';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +46,10 @@ export default async function Pagina() {
       </section>
 
       <ControlesSync pendientes={estado.pendientesDeEscribir} />
+
+      <section style={{ marginTop: 32 }}>
+        <PanelAutomatizacion />
+      </section>
 
       <section style={{ marginTop: 32 }}>
         <div className="eyebrow" style={{ marginBottom: 12 }}>Bitácora</div>

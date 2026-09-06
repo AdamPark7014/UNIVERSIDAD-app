@@ -9,6 +9,7 @@ import { BandaAlertas } from '@/components/BandaAlertas';
 import { PanelGuiasExamen, type GuiaExamenItem } from '@/components/PanelGuiasExamen';
 import { EtiquetaMateria } from '@/components/EtiquetaMateria';
 import { SeccionCabecera } from '@/components/SeccionCabecera';
+import { PanelAutomatizacion } from '@/components/PanelAutomatizacion';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,6 +96,10 @@ export default async function Pagina() {
       </header>
 
       {alertas && <BandaAlertas datos={alertas} />}
+
+      <section className="bloque-seccion">
+        <PanelAutomatizacion />
+      </section>
 
       <section className="bloque-seccion">
         <SeccionCabecera eyebrow="Exámenes próximos" accion="Ver módulo →" href="/examenes" />

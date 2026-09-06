@@ -17,4 +17,16 @@ export default registerAs('app', () => ({
    * apuntes de los que se pueda estudiar despues.
    */
   umbralNotas: parseInt(process.env.UMBRAL_NOTAS ?? '50', 10),
+  /**
+   * Ciclo automático: escribe pendientes, genera notas post-clase y mantiene
+   * plantillas. Pensado para el PC de estudio (OneDrive); en prod también sirve
+   * sobre /data/docs.
+   */
+  autoCiclo: (process.env.AUTO_CICLO ?? 'true') === 'true',
+  /** Intervalo del ciclo en ms (default 3 min). */
+  autoIntervaloMs: parseInt(process.env.AUTO_INTERVALO_MS ?? '180000', 10),
+  /** Días a futuro para crear plantillas Guía/Notas desde el horario. */
+  autoPlantillasDias: parseInt(process.env.AUTO_PLANTILLAS_DIAS ?? '14', 10),
+  /** Zona horaria del horario escolar. */
+  zonaHorario: process.env.TZ_HORARIO ?? 'America/Mexico_City',
 }));

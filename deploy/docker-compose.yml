@@ -28,6 +28,9 @@ services:
       WEB_ORIGIN: ${WEB_ORIGIN}
       SEMESTRE_ACTIVO: ${SEMESTRE_ACTIVO:-2026-OTO}
       VIGILAR_DISCO: 'false'
+      AUTO_CICLO: 'true'
+      AUTO_INTERVALO_MS: '180000'
+      TZ_HORARIO: America/Mexico_City
       BACKUP_ON_WRITE: 'true'
     volumes:
       - ${DATA_HOST_PATH}:/data

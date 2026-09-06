@@ -4,6 +4,7 @@ import { SinApi } from '@/components/SinApi';
 import { FilaEvaluacion } from '@/components/FilaEvaluacion';
 import { PanelGuiasExamen, type GuiaExamenItem } from '@/components/PanelGuiasExamen';
 import { SeccionCabecera } from '@/components/SeccionCabecera';
+import { BotonRegenerarGuias } from '@/components/BotonRegenerarGuias';
 import { diasDesdeHoy } from '@/lib/formato';
 import { esExamen } from '@/lib/evaluaciones';
 
@@ -60,7 +61,13 @@ export default async function Pagina() {
       </header>
 
       <div id="guias-examen" className="bloque-seccion">
-        <PanelGuiasExamen guias={guias ?? []} titulo="Guías de examen" mostrarMateria />
+        <div className="fila entre" style={{ marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
+          <div className="eyebrow" style={{ margin: 0 }}>
+            Guías de examen
+          </div>
+          <BotonRegenerarGuias proximos={21} />
+        </div>
+        <PanelGuiasExamen guias={guias ?? []} titulo="" mostrarMateria />
       </div>
 
       <section className="bloque-seccion">

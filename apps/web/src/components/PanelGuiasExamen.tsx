@@ -37,20 +37,24 @@ export function PanelGuiasExamen({
   if (!lista.length) {
     return (
       <section className="panel-guias-examen">
-        <div className="eyebrow" style={{ marginBottom: 12 }}>{titulo}</div>
-        <div className="vacio">Aún no hay guías de examen en disco.</div>
+        {titulo ? <div className="eyebrow" style={{ marginBottom: 12 }}>{titulo}</div> : null}
+        <div className="vacio">
+          Aún no hay guías. Usa «Regenerar guías» o el panel de Automatización.
+        </div>
       </section>
     );
   }
 
   return (
     <section className="panel-guias-examen">
-      <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
-        <div className="eyebrow">{titulo}</div>
-        <Link href="/examenes#guias-examen" className="mini">
-          Ver todas →
-        </Link>
-      </div>
+      {titulo ? (
+        <div className="fila entre" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
+          <div className="eyebrow">{titulo}</div>
+          <Link href="/examenes#guias-examen" className="mini">
+            Ver todas →
+          </Link>
+        </div>
+      ) : null}
       <div className="rejilla-guias">
         {lista.map((g) => (
           <a

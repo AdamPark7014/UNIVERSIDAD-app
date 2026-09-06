@@ -1973,3 +1973,13 @@ button:focus-visible {
     overflow-x: auto;
   }
 }
+
+.panel-auto {
+  padding: 20px 20px 18px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-tarjeta);
+  background: linear-gradient(180deg, #f3f5f8 0%, var(--papel) 70%);
+}
+.mini-auto-log {
+  padding: 12px 14px;
+}

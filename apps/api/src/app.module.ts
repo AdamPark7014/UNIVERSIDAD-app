@@ -18,6 +18,7 @@ import { LibrosModule } from './libros/libros.module';
 import { AlertasModule } from './alertas/alertas.module';
 import { NotasModule } from './notas/notas.module';
 import { GuiasExamenModule } from './guias-examen/guias-examen.module';
+import { AutomatizacionModule } from './automatizacion/automatizacion.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { GuiasExamenModule } from './guias-examen/guias-examen.module';
     AlertasModule,
     NotasModule,
     GuiasExamenModule,
+    AutomatizacionModule,
   ],
 })
 export class AppModule {}
