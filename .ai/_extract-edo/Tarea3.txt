@@ -1,0 +1,29 @@
+--- page 1 ---
+Tarea 3
+Ecuaciones diferenciales ordinarias
+UDLAP
+Dr. Felipe de Jes´ us Aguilar Romero
+August 29, 2026
+1. Ejercicios 25-30 del libro, p´ agina 63.
+2. Ejercicios 31-36 del libro, p´ agina 63.
+3. Ejercicios 37-40 del libro, p´ agina 63.
+4. Ejercicios 41 y 42 del libro, p´ agina 63.
+5. Ejercicios 43 y 44 del libro, p´ agina 63.
+6. Resuelva la siguiente ecuaci´ on diferencial lineal:
+dy
+dx + 2
+x y=x 2, x >0.
+7. Resuelva la siguiente ecuaci´ on diferencial lineal:
+dy
+dx −3y= 2xe 3x.
+8. Resuelva el siguiente problema de valor inicial:
+dy
+dx + 1
+x y=x 2 lnx, y(1) = 2, x >0.
+9. Resuelva el siguiente problema de valor inicial:
+dy
+dx − 2
+x y=x 2ex, y(1) = 1, x >0.
+Libro: Ecuaciones Diferenciales con aplicaciones de modelado. Dennis G.
+Zill. CENGAGE Learning. Decimoprimera edici´ on. 2018 ISBN: 9786075266312
+1

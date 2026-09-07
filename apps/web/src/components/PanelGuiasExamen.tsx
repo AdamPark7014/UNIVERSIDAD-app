@@ -77,6 +77,9 @@ export function PanelGuiasExamen({
               <strong>{g.titulo}</strong>
               <span className="fila" style={{ gap: 8, marginTop: 4 }}>
                 <span className="insignia">{ETIQ_TIPO[g.tipo] ?? g.tipo}</span>
+                {g.archivo.toLowerCase().endsWith('.pdf') && (
+                  <span className="insignia examen">PDF · papel</span>
+                )}
                 <span className="dato mini silencio">
                   {Math.max(1, Math.round(g.tamanoBytes / 1024))} KB
                 </span>

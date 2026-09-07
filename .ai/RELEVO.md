@@ -5,21 +5,20 @@
 - **Rama:** master
 
 ## Hecho en este turno
-- Motor de automatización del caso de uso personal (`/api/automatizacion`):
-  - ciclo cada 3 min: escribe pendientes → notas post-clase → plantillas 14 días → guías MEGA (máx 1×/12h)
-  - zona `America/Mexico_City`
-- Plantillas Guía/Notas desde horario (`POST /automatizacion/preparar-plantillas`)
-- Guías MEGA por API (`POST /automatizacion/generar-guias`) + botón en Exámenes
-- Panel Automatización en Panel y Sync; `AUTO_CICLO=true` en docker-compose prod
-- Desplegado en school
+- Guías PDF en la app: `/api/guias-examen` lista/sirve `.pdf` + `.docx` (badge «PDF · papel»).
+- EDO Examen 1 (papel, 10-sep): guía MEGA LaTeX → `PARCIAL-Examen-1-PAPEL-RESUELTO.pdf` en Guias-estudio (local + prod).
+  - Tareas 1–4 + clases; T3.6–T3.9 resueltos; árbol separable/lineal/exacta; técnica a papel.
+- Fuentes EDO copiadas a `Entregas/Tareas-enunciados` y `Docs/Fuentes-clase`.
+- Embebidos: `Banco-Ejercicios-Evaluacion-1-RESUELTO.pdf` subido a prod Guias-estudio.
+- Deploy school + Traefik school.yml asegurado.
 
 ## A medias - CUIDADO
 - nada
 
 ## Siguiente paso
-- En local con OneDrive: dejar `AUTO_CICLO=true` + `VIGILAR_DISCO=true` (encender.ps1)
-- Probar «Correr ciclo ahora» en el panel
-- Después: TTS desde sesión, detección de entregas en carpeta, multi-usuario escuela
+- Estudiar EDO con el PDF (prioridad T3.6–9 + árbol + mini simulacro).
+- Embebidos: PDF del banco ya visible en Exámenes tras hard refresh.
 
 ## No tocar
 - `deploy/.env` y `data/` en el servidor.
+- No renombrar los PDF `*-PAPEL-RESUELTO` / `Banco-*` a `PARCIAL-….docx` (el auto-ciclo pisaría docx).

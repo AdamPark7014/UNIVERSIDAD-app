@@ -1,0 +1,29 @@
+--- page 1 ---
+Ecuaciones diferenciales 
+ordinarias
+Universidad de las Américas Puebla
+Dr. Felipe de Jesús Aguilar Romero
+--- page 2 ---
+Ecuaciones lineales
+• Definición. Una ecuación diferencial de primer orden de la forma 
+𝑎1 𝑥 𝑑𝑦
+𝑑𝑥 + 𝑎0𝑦 = 𝑔 𝑥
+Se dice que es una ecuación lineal en la variable dependiente 𝑦.
+La forma estándar de una ecuación lineal es:
+𝑑𝑦
+𝑑𝑥 + 𝑃 𝑥 𝑦 = 𝑓(𝑥)
+Buscamos una solución sobre un intervalo donde P(x) y f(x) sean 
+continuas.
+--- page 3 ---
+Solución de una ecuación lineal de primer 
+orden
+• Tener la ecuación en forma estándar
+• Identifique a P(x) y determine el factor integrante. No se necesita 
+utilizar una constante.
+• Multiplique la forma estándar de la ecuación por el factor 
+integrante, por lo que 
+𝑑[(𝑒׬𝑃 𝑥 𝑑𝑥)𝑦]
+𝑑𝑥 = 𝑒׬𝑃 𝑥 𝑑𝑥𝑓(𝑥)
+Integre ambos lados y resuelva para 𝑦.
+--- page 4 ---
+Ecuación homogénea

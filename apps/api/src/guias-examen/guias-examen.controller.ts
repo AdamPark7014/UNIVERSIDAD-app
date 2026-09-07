@@ -44,9 +44,11 @@ export class GuiasExamenController {
       const carpeta = path.join(m.semestre.raizDocumentos, m.carpeta, 'Docs', 'Guias-estudio');
       let archivos: string[] = [];
       try {
-        archivos = (await fs.readdir(carpeta)).filter(
-          (f) => f.toLowerCase().endsWith('.docx') && !f.toLowerCase().endsWith('.bak'),
-        );
+        archivos = (await fs.readdir(carpeta)).filter((f) => {
+          const low = f.toLowerCase();
+          if (low.endsWith('.bak') || low.startsWith('~$')) return false;
+          return low.endsWith('.docx') || low.endsWith('.pdf');
+        });
       } catch {
         continue;
       }
@@ -94,8 +96,11 @@ export class GuiasExamenController {
     if (archivo.includes('..') || archivo.includes('/') || archivo.includes('\\')) {
       throw new NotFoundException('Archivo inválido');
     }
-    if (!archivo.toLowerCase().endsWith('.docx')) {
-      throw new NotFoundException('Solo .docx');
+    if (
+      !archivo.toLowerCase().endsWith('.docx') &&
+      !archivo.toLowerCase().endsWith('.pdf')
+    ) {
+      throw new NotFoundException('Solo .docx o .pdf');
     }
 
     const m = await this.prisma.materia.findFirst({
@@ -117,9 +122,11 @@ export class GuiasExamenController {
       throw new NotFoundException('Guía no encontrada');
     }
 
+    const esPdf = archivo.toLowerCase().endsWith('.pdf');
     res.set({
-      'Content-Type':
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'Content-Type': esPdf
+        ? 'application/pdf'
+        : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'Content-Disposition': `inline; filename="${archivo}"`,
     });
     return new StreamableFile(createReadStream(ruta));
@@ -127,7 +134,7 @@ export class GuiasExamenController {
 }
 
 function parseNombreGuia(archivo: string): { titulo: string; tipo: string } {
-  const base = archivo.replace(/\.docx$/i, '');
+  const base = archivo.replace(/\.(docx|pdf)$/i, '');
   const m = base.match(/^(PARCIAL|FINAL|QUIZ)-(.+)$/i);
   if (!m) return { titulo: base.replace(/-/g, ' '), tipo: 'OTRO' };
   return {

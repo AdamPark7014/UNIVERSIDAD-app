@@ -1,0 +1,15 @@
+--- page 1 ---
+Tarea 1
+Ecuaciones diferenciales ordinarias
+UDLAP
+Dr. Felipe de Jes´ us Aguilar Romero
+August 19, 2026
+ES OBLIGATORIO HACER UNO DE CADA UNO.
+1. Ejercicios 1-5 del libro, p´ agina 12.
+2. Ejercicios 9-10 del libro, p´ agina 12.
+3. Ejercicios 11-14 del libro, p´ aginas 12-13.
+4. Ejercicios 21-24 del libro, p´ agina 13.
+5. Ejercicios 1-22 del libro, p´ agina 52.
+Libro: Ecuaciones Diferenciales con aplicaciones de modelado. Dennis G.
+Zill. CENGAGE Learning. Decimoprimera edici´ on. 2018 ISBN: 9786075266312
+1
