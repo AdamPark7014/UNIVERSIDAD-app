@@ -50,8 +50,14 @@ export class GuiasExamenController {
       orderBy: { orden: 'asc' },
     });
 
-    const hoy = new Date();
-    const hoyUtc = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    const partes = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+    const num = (t: string) => Number(partes.find((p) => p.type === t)?.value);
+    const hoyUtc = Date.UTC(num('year'), num('month') - 1, num('day'));
 
     const out: GuiaExamenDTO[] = [];
     for (const m of materias) {

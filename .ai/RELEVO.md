@@ -5,22 +5,18 @@
 - **Rama:** master
 
 ## Hecho en este turno
-- Rescate previo: `relevo.ps1 salvar` → commit `8e92310` (guias controller + PanelGuiasExamen + globals.css).
-- Guía LaTeX MEGA papel sobrescrita (fuera del repo):
-  `C:\Users\adpoz\OneDrive\Documentos\Universidad\2026-Semestre-5\07-Ecuaciones-Diferenciales-HU325\Latex\Guia-Examen-1\Guia-Examen-1-PAPEL.tex`
-  - Banner EXAMEN 10 SEP · HOY 6 SEP · 4 DÍAS · PAPEL
-  - Árbol 1.er orden + chuletas (lineal/separable/exacta/homogénea)
-  - T3.6–T3.9 con álgebra completa + verificación por derivación
-  - 16 ejercicios adicionales A1–A16 resueltos a fondo
-  - Técnica papel, mini simulacro 40 min + clave, checklist 4 días
+- Cada tarjeta de guía muestra **fecha + “en N días”** (cruce con evaluaciones; zona CDMX).
+- Orden: exámenes más cercanos primero; urgentes ≤7 días resaltados.
+- EDO Examen 1 (10-sep, hoy 6 → **en 4 días**): PDF MEGA ampliado (~313 KB) con T3.6–9 + ~16 ejercicios desarrollados a detalle, técnica papel, simulacro.
+- Embebidos Evaluación 1 aparece con fecha 7-sep (mañana).
+- Deploy school OK.
 
 ## A medias - CUIDADO
 - nada
 
 ## Siguiente paso
-- Compilar `Guia-Examen-1-PAPEL.tex` con pdflatex (2 pasadas) y estudiar T3.6–9 + simulacro.
-- Opcional: copiar PDF resultante a Guias-estudio (local/prod) si Adam lo pide.
+- Hard refresh `/examenes` y abrir `Examen 1 PAPEL RESUELTO`.
+- Prioridad EDO: T3.6–9 en blanco → árbol → simulacro del PDF.
 
 ## No tocar
 - `deploy/.env` y `data/` en el servidor.
-- No renombrar los PDF `*-PAPEL-RESUELTO` / `Banco-*` a `PARCIAL-….docx` (el auto-ciclo pisaría docx).
