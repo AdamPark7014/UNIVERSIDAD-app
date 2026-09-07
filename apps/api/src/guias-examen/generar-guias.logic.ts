@@ -52,116 +52,308 @@ function parseArgsCli(argv: string[]) {
 /* ───────────────────── CHEATSHEETS MEGA ───────────────────── */
 
 function megaAleman(titulo: string, dias: number): Bloque[] {
+  /** Guía para quien empieza de cero: TODO en alemán va con traducción al español. */
   const b: Bloque[] = [
-    { tipo: 'ENCABEZADO', texto: 'HOJA DE TRUCOS MEGA — Alemán I (léela 2× al día)' },
-    { tipo: 'PARRAFO', texto: `Para: ${titulo}. Días restantes: ${dias}.` },
-
-    { tipo: 'ENCABEZADO', texto: 'A. Conjugación Präsens — plantilla fija' },
+    { tipo: 'ENCABEZADO', texto: 'HOJA DE TRUCOS — Alemán I (cero alemán → español al lado)' },
     {
       tipo: 'PARRAFO',
       texto:
-        'Regulares (machen = hacer): ich mache · du machst · er/sie/es macht · wir machen · ihr macht · sie/Sie machen. ' +
-        'Terminaciones: -e / -st / -t / -en / -t / -en. Si el verbo termina en -t/-d/-chn/-fn/-tm/-dn, du/er llevan -est/-et ' +
-        '(arbeiten → du arbeitest, er arbeitet; finden → du findest).',
+        `Para: ${titulo}. Días restantes: ${dias}. ` +
+        'REGLA DE ESTA GUÍA: cada palabra o frase en alemán lleva su significado en español entre paréntesis. ' +
+        'No asumas que «ya sabes» nada. Lee alemán → español en voz alta.',
+    },
+
+    { tipo: 'ENCABEZADO', texto: '0. Alfabeto mental (lo mínimo)' },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        'Umlauts (puntos encima): ä ≈ «e» abierta, ö ≈ «e» redondeada, ü ≈ «i» con labios de «u». ' +
+        'ß (Eszett) = ss. Los SUSTANTIVOS siempre con MAYÚSCULA: Student (estudiante), Familie (familia).',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Artículos: der = el (masculino) · die = la / las (femenino o plural) · das = lo/el (neutro). ' +
+        'Ej.: der Vater (el padre), die Mutter (la madre), das Kind (el niño/a).',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'A. Verbos en presente (Präsens = tiempo presente)' },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        'Plantilla de un verbo regular. Ejemplo machen = hacer. ' +
+        'ich mache (yo hago) · du machst (tú haces) · er/sie/es macht (él/ella/eso hace) · ' +
+        'wir machen (nosotros hacemos) · ihr macht (vosotros hacéis) · sie/Sie machen (ellos hacen / usted hace). ' +
+        'Terminaciones: -e / -st / -t / -en / -t / -en.',
     },
     {
       tipo: 'PARRAFO',
       texto:
-        'sein: ich bin · du bist · er/sie/es ist · wir sind · ihr seid · sie/Sie sind. ' +
-        'haben: ich habe · du hast · er/sie/es hat · wir haben · ihr habt · sie/Sie haben. ' +
-        'Memoriza ambas en voz alta hasta que salgan sin pensar.',
+        'Si el verbo termina en -t/-d (o grupos difíciles), du/er llevan -est/-et: ' +
+        'arbeiten = trabajar → du arbeitest (tú trabajas), er arbeitet (él trabaja). ' +
+        'finden = encontrar → du findest (tú encuentras).',
     },
     {
       tipo: 'PARRAFO',
       texto:
-        'Verbos con cambio de vocal (Kapitel 1–2 típicos): sprechen → du sprichst, er spricht; ' +
-        'lesen → du liest, er liest; fahren → du fährst, er fährt; nehmen → du nimmst, er nimmt; ' +
-        'geben → du gibst, er gibt; essen → du isst, er isst. Solo cambian du/er; ich/wir/ihr/sie siguen la raíz.',
+        'sein = ser/estar (OBLIGATORIO de memoria): ' +
+        'ich bin (yo soy/estoy) · du bist (tú eres/estás) · er/sie/es ist (él/ella es/está) · ' +
+        'wir sind (nosotros somos/estamos) · ihr seid (vosotros sois/estáis) · sie/Sie sind (ellos son / usted es).',
     },
-
-    { tipo: 'ENCABEZADO', texto: 'B. Posición del verbo (regla de oro — siempre cae)' },
-    {
-      tipo: 'VINETA',
-      texto: 'Enunciativa: verbo conjugado en 2ª posición. «Heute gehe ich zur Uni.» (NO «Heute ich gehe…»)',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'Ja/Nein-Frage: verbo primero. «Bist du Student?» «Kommst du aus Mexiko?»',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'W-Frage: Wort + verbo + sujeto. «Wie heißt du?» «Woher kommst du?» «Was machst du?» «Wo wohnst du?»',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'Negación: nicht (niega verbo/adjetivo/toda la oración) · kein/keine (niega sustantivo con artículo indefinido). «Ich bin nicht müde.» «Ich habe keine Geschwister.»',
-    },
-
-    { tipo: 'ENCABEZADO', texto: 'C. Vocabulario mínimo Examen 1 (Kapitel 1 + 2)' },
-    {
-      tipo: 'VINETA',
-      texto: 'Saludos: Hallo, Guten Morgen, Guten Tag, Guten Abend, Auf Wiedersehen, Tschüss, Bis bald',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'Presentarse: Ich heiße… / Ich bin… / Ich komme aus… / Ich wohne in… / Ich studiere… / Ich spreche…',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'Familia: die Mutter, der Vater, die Eltern, der Bruder, die Schwester, das Kind, die Tochter, der Sohn, die Großeltern',
-    },
-    {
-      tipo: 'VINETA',
-      texto:
-        'Possessivos: mein/meine, dein/deine, sein/seine, ihr/ihre, unser/unsere, euer/eure. ' +
-        'Sin -e en masculino/neutro singular; con -e en femenino y plural. «mein Vater / meine Mutter / meine Eltern»',
-    },
-    {
-      tipo: 'VINETA',
-      texto:
-        'Profesiones (sin artículo tras sein): der Student/die Studentin, der Ingenieur/die Ingenieurin, ' +
-        'der Arzt/die Ärztin, der Lehrer/die Lehrerin, der Informatiker/die Informatikerin. «Ich bin Studentin.»',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'Números: 0–20 de memoria; 21+ al revés (einundzwanzig). Teléfono: zwo a veces por zwei.',
-    },
-    {
-      tipo: 'VINETA',
-      texto: 'W-Wörter: wer, was, wo, woher, wohin, wie, wann, warum, welche(r/s)',
-    },
-
-    { tipo: 'ENCABEZADO', texto: 'D. Errores que restan puntos (evítalos)' },
-    { tipo: 'VINETA', texto: 'Olvidar mayúscula en sustantivos (Student, Familie, Informatik)' },
-    { tipo: 'VINETA', texto: '«Ich bin ein Student» → correcto: «Ich bin Student»' },
-    { tipo: 'VINETA', texto: 'Responder ja a pregunta negativa cuando contradices → usa doch' },
-    { tipo: 'VINETA', texto: 'Poner el verbo al final en oraciones simples' },
-    { tipo: 'VINETA', texto: 'Confundir du/Sie (formal) en el examen escrito: mira el contexto' },
-    { tipo: 'VINETA', texto: 'Olvidar Umlaut: Ärztin, spät, schön, fünf' },
-
-    { tipo: 'ENCABEZADO', texto: 'E. Mini-examen (hazlo YA, sin mirar; luego chequea)' },
-    { tipo: 'NUMERADA', texto: 'Conjuga «wohnen» en las 6 personas.' },
-    { tipo: 'NUMERADA', texto: 'Conjuga «sein» y «haben» completo.' },
-    { tipo: 'NUMERADA', texto: 'Traduce: «¿De dónde vienes?» / «Me llamo Ada.» / «Soy estudiante.» / «Vivo en Puebla.»' },
-    { tipo: 'NUMERADA', texto: 'Escribe 4 oraciones sobre tu familia con mein/meine.' },
-    { tipo: 'NUMERADA', texto: 'Haz 3 Ja/Nein-Fragen y 3 W-Fragen sobre estudios/familia.' },
-    { tipo: 'NUMERADA', texto: 'Corrige: «Heute ich gehe zur Uni.» / «Ich bin ein Ingenieur.» / «Kommst du nicht? — Ja!» (si quieres decir que SÍ vienes)' },
-
-    { tipo: 'ENCABEZADO', texto: 'F. Respuestas del mini-examen' },
     {
       tipo: 'PARRAFO',
       texto:
-        'wohnen: wohne, wohnst, wohnt, wohnen, wohnt, wohnen. ' +
-        'Woher kommst du? / Ich heiße Ada. / Ich bin Student(in). / Ich wohne in Puebla. ' +
-        'Correcciones: «Heute gehe ich zur Uni.» · «Ich bin Ingenieur.» · «Doch!»',
+        'haben = tener: ' +
+        'ich habe (yo tengo) · du hast (tú tienes) · er/sie/es hat (él/ella tiene) · ' +
+        'wir haben (nosotros tenemos) · ihr habt (vosotros tenéis) · sie/Sie haben (ellos tienen / usted tiene).',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        'Cambio de vocal en du/er (Kapitel 1–2): ' +
+        'sprechen = hablar → du sprichst (tú hablas), er spricht (él habla); ' +
+        'lesen = leer → du liest, er liest; ' +
+        'fahren = ir/conducir → du fährst, er fährt; ' +
+        'nehmen = tomar → du nimmst, er nimmt; ' +
+        'geben = dar → du gibst, er gibt; ' +
+        'essen = comer → du isst, er isst. ' +
+        'ich/wir/ihr/sie NO cambian la vocal.',
     },
 
-    { tipo: 'ENCABEZADO', texto: 'G. Rutina diaria hasta el examen (25–40 min)' },
-    { tipo: 'NUMERADA', texto: '5 min: sein + haben + 1 regular + 1 con cambio de vocal, en voz alta' },
-    { tipo: 'NUMERADA', texto: '10 min: vocabulario (artículo + palabra + 1 oración propia)' },
-    { tipo: 'NUMERADA', texto: '10 min: escribir 8 oraciones nuevas sin mirar (familia + estudios + ciudad)' },
-    { tipo: 'NUMERADA', texto: '5–10 min: audio (allango / libro) — solo escuchar y repetir' },
-    { tipo: 'NUMERADA', texto: 'Día antes: simulación 20 min cronometrada + probar audífonos/laptop si es en plataforma' },
+    { tipo: 'ENCABEZADO', texto: 'B. Dónde va el verbo (si fallas esto, la oración suena mal)' },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Frase normal: el verbo conjugado va en 2ª posición. ' +
+        '«Heute gehe ich zur Uni.» = Hoy voy a la uni. (NO: «Heute ich gehe…»)',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Pregunta sí/no: verbo primero. «Bist du Student?» = ¿Eres estudiante? ' +
+        '«Kommst du aus Mexiko?» = ¿Vienes de México?',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Pregunta con W: palabra W + verbo + sujeto. ' +
+        '«Wie heißt du?» = ¿Cómo te llamas? ' +
+        '«Woher kommst du?» = ¿De dónde vienes? ' +
+        '«Was machst du?» = ¿Qué haces? ' +
+        '«Wo wohnst du?» = ¿Dónde vives?',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Negación: nicht = no (niega verbo/adjetivo/frase). «Ich bin nicht müde.» = No estoy cansado/a. ' +
+        'kein/keine = ningún/ninguna (niega un sustantivo). «Ich habe keine Geschwister.» = No tengo hermanos.',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'C. Vocabulario Kapitel 1+2 — alemán (español)' },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Saludos:',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Hallo (hola) · Guten Morgen (buenos días) · Guten Tag (buenas / hola de día) · ' +
+        'Guten Abend (buenas noches al llegar) · Auf Wiedersehen (adiós formal) · ' +
+        'Tschüss (chao) · Bis bald (hasta pronto)',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Presentarse (frases listas):',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'Ich heiße… = Me llamo… · Ich bin… = Soy… · Ich komme aus… = Vengo de…',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'Ich wohne in… = Vivo en… · Ich studiere… = Estudio… · Ich spreche… = Hablo…',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Familia (con artículo):',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'die Mutter (la madre) · der Vater (el padre) · die Eltern (los padres) · ' +
+        'der Bruder (el hermano) · die Schwester (la hermana) · das Kind (el niño/a) · ' +
+        'die Tochter (la hija) · der Sohn (el hijo) · die Großeltern (los abuelos) · ' +
+        'die Geschwister (los hermanos, hermanos y hermanas)',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Possessivos (mi / tu / su…):',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'mein/meine = mi · dein/deine = tu · sein/seine = su (de él) · ihr/ihre = su (de ella) / su (de ellos) · ' +
+        'unser/unsere = nuestro · euer/eure = vuestro. ' +
+        'Sin -e: masculino/neutro singular (mein Vater = mi padre). Con -e: femenino y plural (meine Mutter = mi madre; meine Eltern = mis padres).',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Profesiones (tras sein = ser, SIN artículo «ein»):',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'der Student / die Studentin (el/la estudiante) · der Ingenieur / die Ingenieurin (ingeniero/a) · ' +
+        'der Arzt / die Ärztin (médico/a) · der Lehrer / die Lehrerin (maestro/a) · ' +
+        'der Informatiker / die Informatikerin (informático/a). ' +
+        'Correcto: «Ich bin Studentin.» = Soy estudiante. Incorrecto: «Ich bin eine Studentin.»',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Números (di la traducción en español mientras memorizas):',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'null (0) eins (1) zwei (2) drei (3) vier (4) fünf (5) sechs (6) sieben (7) acht (8) neun (9) zehn (10) ' +
+        'elf (11) zwölf (12) dreizehn (13) … zwanzig (20). ' +
+        '21 = einundzwanzig (uno-y-veinte: se dice «al revés»).',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto: 'Palabras pregunta (W-Wörter):',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'wer (quién) · was (qué) · wo (dónde) · woher (de dónde) · wohin (a dónde) · ' +
+        'wie (cómo) · wann (cuándo) · warum (por qué) · welche/r/s (cuál / qué)',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'D. Diálogos modelo (alemán = español)' },
+    {
+      tipo: 'VINETA',
+      texto: 'A: Hallo! Wie heißt du? = ¡Hola! ¿Cómo te llamas?',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'B: Ich heiße Ada. Und du? = Me llamo Ada. ¿Y tú?',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'A: Ich komme aus Mexiko. Woher kommst du? = Vengo de México. ¿De dónde vienes?',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'B: Ich wohne in Puebla und studiere Informatik. = Vivo en Puebla y estudio informática.',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'A: Hast du Geschwister? = ¿Tienes hermanos?',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'B: Ja, ich habe eine Schwester. / Nein, ich habe keine Geschwister. = Sí, tengo una hermana. / No, no tengo hermanos.',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'E. Errores que restan puntos' },
+    {
+      tipo: 'VINETA',
+      texto: 'Olvidar MAYÚSCULA en sustantivos: Student (estudiante), Familie (familia), Informatik (informática).',
+    },
+    {
+      tipo: 'VINETA',
+      texto: '«Ich bin ein Student» → correcto: «Ich bin Student» (= Soy estudiante).',
+    },
+    {
+      tipo: 'VINETA',
+      texto:
+        'Si te preguntan con no y quieres decir que SÍ (contradecir): usa doch (sí que sí), no ja. ' +
+        'Ej.: «Kommst du nicht?» (= ¿No vienes?) → «Doch!» (= ¡Sí vengo!).',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'Poner el verbo al final en oraciones simples (en alemán básico va en 2ª posición).',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'du = tú (informal) · Sie = usted (formal, con mayúscula). Mira el contexto del examen.',
+    },
+    {
+      tipo: 'VINETA',
+      texto: 'Umlauts: Ärztin (médica), spät (tarde), schön (bonito/a), fünf (cinco).',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'F. Mini-examen (hazlo YA sin mirar)' },
+    {
+      tipo: 'NUMERADA',
+      texto: 'Conjuga wohnen (= vivir) en las 6 personas y escribe qué significa cada forma.',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: 'Conjuga sein (= ser/estar) y haben (= tener) completo con traducción.',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto:
+        'Traduce al alemán: «¿De dónde vienes?» / «Me llamo Ada.» / «Soy estudiante.» / «Vivo en Puebla.»',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: 'Escribe 4 oraciones sobre tu familia usando mein/meine (= mi) y tradúcelas al español.',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: 'Escribe 3 preguntas sí/no y 3 con W sobre estudios/familia; pon la traducción debajo.',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto:
+        'Corrige y traduce: «Heute ich gehe zur Uni.» / «Ich bin ein Ingenieur.» / ' +
+        '«Kommst du nicht? — Ja!» (si quieres decir que SÍ vienes).',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'G. Respuestas del mini-examen (con español)' },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        'wohnen: ich wohne (yo vivo), du wohnst (tú vives), er/sie wohnt (él/ella vive), ' +
+        'wir wohnen (nosotros vivimos), ihr wohnt (vosotros vivís), sie/Sie wohnen (ellos viven / usted vive).',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        '¿De dónde vienes? → Woher kommst du? · Me llamo Ada. → Ich heiße Ada. · ' +
+        'Soy estudiante. → Ich bin Student(in). · Vivo en Puebla. → Ich wohne in Puebla.',
+    },
+    {
+      tipo: 'PARRAFO',
+      texto:
+        'Correcciones: «Heute gehe ich zur Uni.» (= Hoy voy a la uni.) · ' +
+        '«Ich bin Ingenieur.» (= Soy ingeniero.) · «Doch!» (= ¡Sí que sí / Sí vengo!).',
+    },
+
+    { tipo: 'ENCABEZADO', texto: 'H. Rutina diaria hasta el examen (25–40 min)' },
+    {
+      tipo: 'NUMERADA',
+      texto: '5 min: sein + haben + 1 regular + 1 con cambio de vocal, en voz alta, diciendo el español',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: '10 min: vocabulario — di: artículo + palabra alemana + español + 1 oración',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: '10 min: escribe 8 oraciones nuevas (familia + estudios + ciudad) y tradúcelas debajo',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: '5–10 min: usa el panel de Pronunciación en la app (oír de-DE)',
+    },
+    {
+      tipo: 'NUMERADA',
+      texto: 'Día antes: simulación 20 min + probar audífonos/laptop si el examen es en plataforma',
+    },
   ];
   return b;
 }

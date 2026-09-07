@@ -5,19 +5,19 @@
 - **Rama:** master
 
 ## Hecho en este turno
-- Embebidos guía Evaluación 1: sección nueva **«Conocimiento previo»**
-  (qué es un HDL, VHDL vs Verilog, bits/compuertas, combinacional vs
-  secuencial, trampa del `&`, glosario, tabla de traducción).
-- Plan de estudio: bloque 0 (20 min bases) antes de teoría/plantillas.
-- Recompilado 26 págs → `Banco-Ejercicios-Evaluacion-1-RESUELTO.pdf` y
-  subido a prod (`scp` data/docs). Endpoint PDF → 200.
+- Guías de alemán bilingües (cero alemán → español al lado): `megaAleman`
+  en `generar-guias.logic.ts` (conjugaciones, vocab, diálogos, errores,
+  mini-examen, rutina).
+- Panel pronunciación: más frases DE/ES y copy «arriba DE / abajo ES».
+- Deploy API + regen 9/9 guías alemán en prod; deploy web con el panel.
+- Spot-check `PARCIAL-Examen-1.docx`: traducciones presentes.
 
 ## A medias - CUIDADO
 - nada
 
 ## Siguiente paso
-- Hoy 7-sep 18:00: Evaluación 1 Embebidos — abrir el PDF y leer primero
-  «Conocimiento previo», luego plantillas.
+- Examen 1 alemán **2026-09-08** (Kapitel 1–2): abrir guía Examen 1
+  (hard refresh Exámenes) y panel Pronunciación.
 - 10-sep: EDO + Arquitecturas + Escritura.
 
 ## No tocar
