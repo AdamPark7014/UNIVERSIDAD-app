@@ -1952,6 +1952,19 @@ button:focus-visible {
 .tarjeta-guia-examen:hover {
   transform: translateY(-1px);
 }
+.guia-fecha {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.tarjeta-guia-examen.guia-urgente {
+  border-color: #efd2cb;
+  background: linear-gradient(180deg, #fbf6f4 0%, var(--papel) 100%);
+}
+.tarjeta-guia-examen.guia-pasada {
+  opacity: 0.72;
+}
 
 .panel-pronunciacion {
   box-shadow: 0 8px 24px rgba(18, 21, 26, 0.04);
