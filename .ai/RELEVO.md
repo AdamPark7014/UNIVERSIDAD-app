@@ -5,19 +5,21 @@
 - **Rama:** master
 
 ## Hecho en este turno
-- Guías PDF en la app: `/api/guias-examen` lista/sirve `.pdf` + `.docx` (badge «PDF · papel»).
-- EDO Examen 1 (papel, 10-sep): guía MEGA LaTeX → `PARCIAL-Examen-1-PAPEL-RESUELTO.pdf` en Guias-estudio (local + prod).
-  - Tareas 1–4 + clases; T3.6–T3.9 resueltos; árbol separable/lineal/exacta; técnica a papel.
-- Fuentes EDO copiadas a `Entregas/Tareas-enunciados` y `Docs/Fuentes-clase`.
-- Embebidos: `Banco-Ejercicios-Evaluacion-1-RESUELTO.pdf` subido a prod Guias-estudio.
-- Deploy school + Traefik school.yml asegurado.
+- Rescate previo: `relevo.ps1 salvar` → commit `8e92310` (guias controller + PanelGuiasExamen + globals.css).
+- Guía LaTeX MEGA papel sobrescrita (fuera del repo):
+  `C:\Users\adpoz\OneDrive\Documentos\Universidad\2026-Semestre-5\07-Ecuaciones-Diferenciales-HU325\Latex\Guia-Examen-1\Guia-Examen-1-PAPEL.tex`
+  - Banner EXAMEN 10 SEP · HOY 6 SEP · 4 DÍAS · PAPEL
+  - Árbol 1.er orden + chuletas (lineal/separable/exacta/homogénea)
+  - T3.6–T3.9 con álgebra completa + verificación por derivación
+  - 16 ejercicios adicionales A1–A16 resueltos a fondo
+  - Técnica papel, mini simulacro 40 min + clave, checklist 4 días
 
 ## A medias - CUIDADO
 - nada
 
 ## Siguiente paso
-- Estudiar EDO con el PDF (prioridad T3.6–9 + árbol + mini simulacro).
-- Embebidos: PDF del banco ya visible en Exámenes tras hard refresh.
+- Compilar `Guia-Examen-1-PAPEL.tex` con pdflatex (2 pasadas) y estudiar T3.6–9 + simulacro.
+- Opcional: copiar PDF resultante a Guias-estudio (local/prod) si Adam lo pide.
 
 ## No tocar
 - `deploy/.env` y `data/` en el servidor.
