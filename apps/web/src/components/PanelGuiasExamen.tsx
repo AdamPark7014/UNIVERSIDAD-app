@@ -22,6 +22,8 @@ const ETIQ_TIPO: Record<string, string> = {
   PARCIAL: 'Parcial',
   FINAL: 'Final',
   QUIZ: 'Quiz',
+  PRACTICA: 'Práctica',
+  CLAVE: 'Clave',
   OTRO: 'Guía',
 };
 

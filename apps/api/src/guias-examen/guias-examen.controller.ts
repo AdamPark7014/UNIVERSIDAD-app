@@ -106,7 +106,7 @@ export class GuiasExamenController {
 
     // Más cercanos primero; sin fecha al final
     const pesoTipo = (t: string) =>
-      t === 'PARCIAL' || t === 'FINAL' ? 0 : t === 'QUIZ' ? 1 : 2;
+      t === 'PARCIAL' || t === 'FINAL' ? 0 : t === 'PRACTICA' ? 1 : t === 'QUIZ' ? 2 : t === 'CLAVE' ? 3 : 4;
     out.sort((a, b) => {
       const da = a.diasRestantes ?? 9999;
       const db = b.diasRestantes ?? 9999;
@@ -173,6 +173,20 @@ export class GuiasExamenController {
 
 function parseNombreGuia(archivo: string): { titulo: string; tipo: string } {
   const base = archivo.replace(/\.(docx|pdf)$/i, '');
+  const clave = base.match(/^PRACTICA-(.+)-CLAVE$/i);
+  if (clave) {
+    return {
+      tipo: 'CLAVE',
+      titulo: clave[1].replace(/-/g, ' ').replace(/\s+/g, ' ').trim(),
+    };
+  }
+  const practica = base.match(/^PRACTICA-(.+)$/i);
+  if (practica) {
+    return {
+      tipo: 'PRACTICA',
+      titulo: practica[1].replace(/-/g, ' ').replace(/\s+/g, ' ').trim(),
+    };
+  }
   const m = base.match(/^(PARCIAL|FINAL|QUIZ)-(.+)$/i);
   if (!m) {
     // Banco-Ejercicios-Evaluacion-1-RESUELTO.pdf → tipo OTRO, título limpio
@@ -205,7 +219,7 @@ function emparejarEvaluacion(
 
   // 1) mismo tipo + título contenido (Examen 1 PAPEL → Examen 1)
   const mismosTipo =
-    tipoGuia === 'OTRO'
+    tipoGuia === 'OTRO' || tipoGuia === 'PRACTICA' || tipoGuia === 'CLAVE'
       ? evaluaciones
       : evaluaciones.filter((e) => e.tipo === tipoGuia);
 

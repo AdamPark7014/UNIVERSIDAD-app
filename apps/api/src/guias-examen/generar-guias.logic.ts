@@ -4,6 +4,7 @@
  */
 import type { PrismaClient } from '@prisma/client';
 import { DocxService, TipoBloque } from '../docx/docx.service';
+import { construirFormularios } from './formularios-examen.logic';
 import * as path from 'node:path';
 import { promises as fs } from 'node:fs';
 
@@ -797,6 +798,25 @@ export async function generarGuiasEstudio(
       if (r) resultados.push(r);
     } catch (err: any) {
       errores.push(`${e.titulo}: ${err.message}`);
+    }
+
+    if (e.tipo === 'PARCIAL' || e.tipo === 'FINAL') {
+      try {
+        const forms = await construirFormularios(prisma, docx, e.id);
+        if (forms) {
+          for (const f of forms.generados) {
+            resultados.push({
+              titulo: f.titulo,
+              materia: f.materia,
+              ruta: f.ruta,
+              kb: f.kb,
+              bloques: f.bloques,
+            });
+          }
+        }
+      } catch (err: any) {
+        errores.push(`formulario ${e.titulo}: ${err.message}`);
+      }
     }
   }
 
