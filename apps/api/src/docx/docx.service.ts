@@ -56,9 +56,37 @@ const FORMATO = {
   alto: 15840,
   margenVertical: 1417, // 2.5 cm
   margenHorizontal: 1701, // 3 cm
+  /** Espaciado de párrafo por defecto (twips) */
+  after: 160,
+  line: 276,
+  encabezadoBefore: 160,
+  encabezadoAfter: 60,
+  listaAfter: 60,
+  sepBefore: 120,
+  sepAfter: 120,
   gris: '595959',
   lineaSeparador: 'BFBFBF',
 } as const;
+
+/** Formularios de práctica: más contenido por hoja (letra ~8 pt, márgenes ~1.3 cm). */
+const FORMATO_COMPACTO = {
+  ...FORMATO,
+  cuerpo: 16,
+  titulo: 18,
+  tema: 15,
+  subtitulo: 14,
+  margenVertical: 720,
+  margenHorizontal: 720,
+  after: 40,
+  line: 220,
+  encabezadoBefore: 80,
+  encabezadoAfter: 20,
+  listaAfter: 20,
+  sepBefore: 40,
+  sepAfter: 40,
+} as const;
+
+type FormatoActivo = typeof FORMATO | typeof FORMATO_COMPACTO;
 
 /** Sangría izquierda, en twips, con la que se escribe una lista numerada. */
 const SANGRIA_NUMERADA = 340;
@@ -234,15 +262,16 @@ export class DocxService {
   /**
    * Reescribe el .docx a partir de los bloques. Conserva el formato del alumno:
    * Carta, márgenes 2.5/3 cm, Arial 10 de cuerpo y título Arial 12 negrita centrado.
+   * Con `compacto: true` (formularios de práctica): ~8 pt y márgenes estrechos.
    */
   async escribir(
     ruta: string,
     bloques: { tipo: TipoBloque; texto: string }[],
-    opciones: { respaldar?: boolean } = {},
+    opciones: { respaldar?: boolean; compacto?: boolean } = {},
   ): Promise<{ bytes: number; hash: string }> {
     if (opciones.respaldar) await this.respaldar(ruta);
 
-    const buffer = await this.aBuffer(bloques);
+    const buffer = await this.aBuffer(bloques, { compacto: opciones.compacto });
     await fs.mkdir(path.dirname(ruta), { recursive: true });
     await fs.writeFile(ruta, buffer);
 
@@ -253,15 +282,19 @@ export class DocxService {
   }
 
   /** Genera el .docx en memoria, para descargarlo sin tocar el disco. */
-  async aBuffer(bloques: { tipo: TipoBloque; texto: string }[]): Promise<Buffer> {
+  async aBuffer(
+    bloques: { tipo: TipoBloque; texto: string }[],
+    opciones: { compacto?: boolean } = {},
+  ): Promise<Buffer> {
+    const F: FormatoActivo = opciones.compacto ? FORMATO_COMPACTO : FORMATO;
     const doc = new Document({
       creator: 'UNIVERSIDAD-app',
       description: 'Generado desde UNIVERSIDAD-app',
       styles: {
         default: {
           document: {
-            run: { font: FORMATO.fuente, size: FORMATO.cuerpo, language: { value: 'es-MX' } },
-            paragraph: { spacing: { after: 160, line: 276, lineRule: 'auto' } },
+            run: { font: F.fuente, size: F.cuerpo, language: { value: 'es-MX' } },
+            paragraph: { spacing: { after: F.after, line: F.line, lineRule: 'auto' } },
           },
         },
       },
@@ -275,7 +308,14 @@ export class DocxService {
                 format: LevelFormat.BULLET,
                 text: '•',
                 alignment: AlignmentType.LEFT,
-                style: { paragraph: { indent: { left: 567, hanging: 283 } } },
+                style: {
+                  paragraph: {
+                    indent: {
+                      left: opciones.compacto ? 360 : 567,
+                      hanging: opciones.compacto ? 180 : 283,
+                    },
+                  },
+                },
               },
             ],
           },
@@ -285,16 +325,16 @@ export class DocxService {
         {
           properties: {
             page: {
-              size: { width: FORMATO.ancho, height: FORMATO.alto },
+              size: { width: F.ancho, height: F.alto },
               margin: {
-                top: FORMATO.margenVertical,
-                bottom: FORMATO.margenVertical,
-                left: FORMATO.margenHorizontal,
-                right: FORMATO.margenHorizontal,
+                top: F.margenVertical,
+                bottom: F.margenVertical,
+                left: F.margenHorizontal,
+                right: F.margenHorizontal,
               },
             },
           },
-          children: bloques.map((b) => this.construirParrafo(b)),
+          children: bloques.map((b) => this.construirParrafo(b, F)),
         },
       ],
     });
@@ -302,33 +342,37 @@ export class DocxService {
     return Packer.toBuffer(doc);
   }
 
-  private construirParrafo(b: { tipo: TipoBloque; texto: string }): Paragraph {
+  private construirParrafo(
+    b: { tipo: TipoBloque; texto: string },
+    F: FormatoActivo = FORMATO,
+  ): Paragraph {
     const texto = b.texto ?? '';
 
     switch (b.tipo) {
       case 'TITULO':
         return new Paragraph({
           alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: texto, bold: true, size: FORMATO.titulo })],
+          spacing: { after: F.after },
+          children: [new TextRun({ text: texto, bold: true, size: F.titulo })],
         });
 
       case 'TEMA':
         return new Paragraph({
           alignment: AlignmentType.CENTER,
-          spacing: { after: 160 },
-          children: [new TextRun({ text: texto, bold: true, size: FORMATO.tema })],
+          spacing: { after: F.after },
+          children: [new TextRun({ text: texto, bold: true, size: F.tema })],
         });
 
       case 'SUBTITULO':
         return new Paragraph({
           alignment: AlignmentType.CENTER,
-          spacing: { after: 200 },
+          spacing: { after: F.after },
           children: [
             new TextRun({
               text: texto,
               italics: true,
-              size: FORMATO.subtitulo,
-              color: FORMATO.gris,
+              size: F.subtitulo,
+              color: F.gris,
             }),
           ],
         });
@@ -336,44 +380,50 @@ export class DocxService {
       case 'ENCABEZADO':
       case 'TAREA_PROPIA_TITULO':
         return new Paragraph({
-          spacing: { before: 160, after: 60 },
-          children: [new TextRun({ text: texto, bold: true })],
+          spacing: { before: F.encabezadoBefore, after: F.encabezadoAfter },
+          children: [new TextRun({ text: texto, bold: true, size: F.cuerpo })],
         });
 
       case 'VINETA':
         return new Paragraph({
           numbering: { reference: 'vinetas', level: 0 },
-          spacing: { after: 60 },
-          children: [new TextRun({ text: texto })],
+          spacing: { after: F.listaAfter },
+          children: [new TextRun({ text: texto, size: F.cuerpo })],
         });
 
       case 'NUMERADA':
         return new Paragraph({
           indent: { left: SANGRIA_NUMERADA },
-          spacing: { after: 60 },
-          children: [new TextRun({ text: texto })],
+          spacing: { after: F.listaAfter },
+          children: [new TextRun({ text: texto, size: F.cuerpo })],
         });
 
       case 'SEPARADOR':
         return new Paragraph({
-          spacing: { before: 120, after: 120 },
+          spacing: { before: F.sepBefore, after: F.sepAfter },
           border: {
             bottom: {
               style: BorderStyle.SINGLE,
               size: 6,
               space: 1,
-              color: FORMATO.lineaSeparador,
+              color: F.lineaSeparador,
             },
           },
           children: [],
         });
 
       case 'ESPACIO':
-        return new Paragraph({ children: [] });
+        return new Paragraph({
+          spacing: { after: F.after },
+          children: [],
+        });
 
       case 'PARRAFO':
       default:
-        return new Paragraph({ children: [new TextRun({ text: texto })] });
+        return new Paragraph({
+          spacing: { after: F.after },
+          children: [new TextRun({ text: texto, size: F.cuerpo })],
+        });
     }
   }
 
