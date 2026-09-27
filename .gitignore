@@ -36,3 +36,4 @@ logs/
 
 # --- Prisma ---
 apps/api/prisma/*.db
+.ai/index/
