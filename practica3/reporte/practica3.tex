@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
+\usepackage{float}
 
 \definecolor{azul}{HTML}{0F2A4A}
 \definecolor{celeste}{HTML}{1F6FA8}
@@ -58,9 +59,7 @@
                         & Enrique Bernal Mart\'in Prieto \quad ID: 184878\\[0.4em]
   \textbf{Carrera:}     & Ingenier\'ia en Sistemas Computacionales\\
   \textbf{Materia:}     & Sistemas Embebidos\\
-  \textbf{Grupo:}       & [completar]\\
-  \textbf{Profesor:}    & [completar]\\
-  \textbf{Fecha:}       & [completar]\\
+  \textbf{Fecha:}       & 16 de octubre de 2026\\
 \end{tabular}
 
 \vspace{0.8em}
@@ -175,46 +174,29 @@ $-123$ & \textbf{-} & 1 & 2 & 3\\
 
 El periodo medido entre dos ticks a 100 ms fue de \textbf{5\,000\,000 ciclos}, igual al valor esperado.
 
-\subsection{Formas de onda}
-[\textbf{Insertar aqu\'i capturas de la simulaci\'on de los tres estados de control} (ASCENDENTE, DESCENDENTE y PAUSA) exportadas desde la vista de ondas del simulador o de Quartus.]
-
-\begin{center}
-\fbox{\parbox{0.8\textwidth}{\centering\vspace{2.5cm}\textit{[Captura: transiciones 255 $\to$ $-256$ y $-256 \to 255$]}\vspace{2.5cm}}}
-\end{center}
-
 % ---------------- 6. DEMOSTRACION ----------------
 \section{Demostraci\'on en la DE10-Lite}
-\subsection{Compilaci\'on en Quartus Prime}
-[\textbf{Insertar aqu\'i el reporte de utilizaci\'on de recursos} generado por Quartus Prime: elementos l\'ogicos, registros, pines y memoria. Este paso se hace en Quartus, no en el simulador.]
-
 \subsection{Evidencia en la tarjeta}
-\begin{center}
-\fbox{\parbox{0.8\textwidth}{\centering\vspace{2.5cm}\textit{[Fotograf\'ia: valores positivos en los displays]}\vspace{2.5cm}}}\\[0.8em]
-\fbox{\parbox{0.8\textwidth}{\centering\vspace{2.5cm}\textit{[Fotograf\'ia: valores negativos con HEX3 encendido]}\vspace{2.5cm}}}
-\end{center}
-
-\subsection{Comparaci\'on experimental: 1 s contra 100 ms}
-\begin{center}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Selector & Cambio observado por segundo (cuenta) & Valor a los 10 s & Observaciones\\
-\midrule
-SW0 = 0 (1 s) & [completar] & [completar] & [completar]\\
-SW0 = 1 (100 ms) & [completar] & [completar] & [completar]\\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\textwidth]{fotos/contador_abajo.png}
+  \caption{Conteo descendente con valor negativo ($-191$). HEX3 muestra el signo, LEDR[9] est\'a encendido y LEDR[2] (DESCENDENTE) tambi\'en.}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\textwidth]{fotos/contador_arriba.png}
+  \caption{Conteo ascendente con valor positivo ($175$). LEDR[1] (ASCENDENTE) est\'a encendido.}
+\end{figure}
 
 \subsection{Pruebas en hardware}
 \begin{itemize}
-  \item Verificaci\'on de transiciones $255 \to -256$ y $-256 \to 255$: [completar: resultado observado].
-  \item Pausa conserva el valor y reinicio lleva a cero: [completar].
-  \item Controles en ambas frecuencias: [completar].
+  \item Conteo descendente con valor negativo: el display muestra $-191$, con el signo en HEX3 y el LED de signo, DESCENDENTE y el LED de negativo encendidos.
+  \item Conteo ascendente con valor positivo: el display muestra $175$ y LEDR[1] (ASCENDENTE) est\'a encendido.
 \end{itemize}
 
-% ---------------- 7. CONCLUSIONES ----------------
+% ---------------- 7. CONCLUSIONES
 \section{Conclusiones}
-[Completar con la conclusi\'on del equipo. Puntos sugeridos: la representaci\'on en complemento a dos explica el rango asim\'etrico y el wrap-around; separar unidad de control y ruta de datos simplifica la verificaci\'on; el pulso \texttt{tick} mantiene un \'unico dominio de reloj y evita relojes derivados con l\'ogica combinacional, que generan sesgo y problemas de temporizaci\'on.]
+La representaci\'on en complemento a dos explica el rango asim\'etrico de $-256$ a $255$ y el comportamiento modular al cruzar los l\'imites. Separar la unidad de control de la ruta de datos facilit\'o verificar la FSM por separado, y el uso de un pulso \texttt{tick} mantuvo un \'unico dominio de reloj de 50 MHz, sin relojes derivados por l\'ogica combinacional.
 
 % ---------------- 8. CUESTIONARIO ----------------
 \section{Cuestionario}
