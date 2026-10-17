@@ -1,0 +1,18 @@
+PASS  RESET desde arranque -> count=0 state=0
+PASS  INC y tick (0 -> 1) -> count=1 state=1
+PASS  57 ticks (1 -> 58) -> count=58 state=1
+PASS  tick (58 -> 59) -> count=59 state=1
+PASS  196 ticks (59 -> 255) -> count=255 state=1
+PASS  tick (255 -> -256) -> count=-256 state=1
+PASS  DEC y tick (0 -> -1) -> count=-1 state=2
+PASS  57 ticks (-1 -> -58) -> count=-58 state=2
+PASS  tick (-58 -> -59) -> count=-59 state=2
+PASS  197 ticks (-59 -> -256) -> count=-256 state=2
+PASS  tick (-256 -> 255) -> count=255 state=2
+PASS  45 ticks (0 -> 45) -> count=45 state=1
+PASS  PAUSA y 5 ticks (45) -> count=45 state=0
+PASS  DEC y 123 ticks (0 -> -123) -> count=-123 state=2
+PASS  RESET desde -123 -> count=0 state=0
+PASS  PAUSA+INC simultaneos -> PAUSA -> count=3 state=0
+------------------------------
+RESULTADO: TODAS LAS PRUEBAS PASARON
